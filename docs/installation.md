@@ -5,6 +5,7 @@
 ## Situer les machines et les fichiers
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart LR
   accTitle: Où le projet s’exécute dans le poste distant
   accDescr: L’ordinateur personnel affiche le bureau distant. Le poste Linux contient l’éditeur, le terminal, le projet uv, les données et les sorties. Fabric et Ansible y accèdent au serveur SSH de cette même VM.
@@ -12,7 +13,7 @@ flowchart LR
   subgraph POSTE["Poste Linux de travail"]
     T["VS Code et terminal"] --> P["Projet uv et Python"]
     P --> O["Données et sorties/"]
-    P --> L["Services HTTP et SMTP locaux"]
+    P --> L["Services HTTP et SMTP<br/>locaux"]
     P --> F["Fabric et Ansible"]
     F -->|SSH 127.0.0.1| C["Cible : la même VM"]
   end

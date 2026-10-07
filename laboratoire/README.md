@@ -9,12 +9,13 @@ La variante à deux cibles reste facultative pour illustrer le passage à un par
 ## Comprendre les deux rôles
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart LR
-  P["Ordinateur personnel : bureau distant"] --> V
+  P["Ordinateur personnel :<br/>bureau distant"] --> V
   subgraph V["Votre unique VM Linux"]
-    C["Projet uv : Fabric et Ansible"] -->|SSH vers 127.0.0.1:22| T["Serveur SSH et Python système"]
-    T --> D["Dossier personnel pyx-tp06"]
-    C --> S["Données, sorties, HTTP et SMTP locaux"]
+    C["Projet uv : Fabric et<br/>Ansible"] -->|SSH vers 127.0.0.1:22| T["Serveur SSH et Python<br/>système"]
+    T --> D["Dossier personnel<br/>pyx-tp06"]
+    C --> S["Données, sorties, HTTP<br/>et SMTP locaux"]
   end
 ```
 
@@ -99,16 +100,17 @@ Cette variante illustre un parc de plusieurs machines ; elle n’est pas nécess
 disponible. Gardez votre inventaire local en le déplaçant avant de préparer cette variante ; ne le supprimez pas.
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart LR
   accTitle: Deux cibles Docker accessibles par des ports locaux
   accDescr: Sur le poste de travail, Fabric et Ansible s’exécutent dans uv. Deux redirections SSH relient les ports locaux 22231 et 22232 au port 22 des conteneurs machine1 et machine2. Le projet et ses fichiers restent hors des cibles.
-  subgraph POSTE["Poste de travail local : Linux ou macOS"]
-    P["Projet uv, données et sorties/"] --> F["Fabric et Ansible natifs"]
+  subgraph POSTE["Poste de travail local<br/>: Linux ou macOS"]
+    P["Projet uv, données et<br/>sorties/"] --> F["Fabric et Ansible<br/>natifs"]
     F -->|127.0.0.1:22231 vers 22| C1
     F -->|127.0.0.1:22232 vers 22| C2
-    subgraph DOCKER["Docker : cibles Linux isolées"]
-      C1["machine1 : SSH et Python"]
-      C2["machine2 : SSH et Python"]
+    subgraph DOCKER["Docker : cibles Linux<br/>isolées"]
+      C1["machine1 : SSH et<br/>Python"]
+      C2["machine2 : SSH et<br/>Python"]
     end
   end
 ```

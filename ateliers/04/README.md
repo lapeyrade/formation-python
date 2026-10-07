@@ -1,5 +1,7 @@
 # TP 04 — Analyser un incident SSH et Web
 
+**Première lecture :** [repérer votre travail et les aides fournies](../../docs/lire-le-code.md).
+
 [Retour au parcours](../../README.md) — **100 minutes**, essais et autocorrection compris.
 
 ## Mission et production
@@ -12,16 +14,17 @@ formation ; les données du parc restent fictives.
 Cette vue suit les événements SSH. Les erreurs Web sont comptées dans un bloc indépendant.
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart TD
   accTitle: Du journal SSH au rapport et aux alertes
   accDescr: Le motif extrait un événement SSH et son IP source est validée. Les rejets et les succès restent distincts du compteur d’échecs. Une jointure gauche avec l’inventaire enrichit le rapport complet, puis un seuil sélectionne les alertes.
-  L["auth.log"] --> P["Extraire l’événement et valider l’IP"]
-  P --> C["Compter les échecs par IP source"]
-  P --> R["Conserver succès et rejets séparément"]
-  C --> J["Jointure gauche sur l’IP source"]
-  I["Inventaire CSV ou Excel"] --> J
-  J --> T["Rapport complet : toutes les IP comptées"]
-  T --> A["Sélectionner les alertes selon le seuil"]
+  L["auth.log"] --> P["Extraire l’événement<br/>et valider l’IP"]
+  P --> C["Compter les échecs par<br/>IP source"]
+  P --> R["Conserver succès et<br/>rejets séparément"]
+  C --> J["Jointure gauche sur<br/>l’IP source"]
+  I["Inventaire CSV ou<br/>Excel"] --> J
+  J --> T["Rapport complet :<br/>toutes les IP comptées"]
+  T --> A["Sélectionner les<br/>alertes selon le seuil"]
 ```
 
 La jointure conserve les IP inconnues. Une alerte demande une investigation ; elle ne prouve pas une intrusion.
@@ -470,11 +473,12 @@ compteur ; observer la ligne perdue avant la correction.
 ### Pourquoi garder le tableau de gauche ?
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart LR
-  A["Échecs observés : .1, .2, .99"] --> J["Jointure gauche sur ip"]
+  A["Échecs observés : .1,<br/>.2, .99"] --> J["Jointure gauche sur ip"]
   B["Inventaire : .1 à .8"] --> J
-  J --> C[".1 et .2 : identité connue"]
-  J --> D[".99 : nom et site manquants"]
+  J --> C[".1 et .2 : identité<br/>connue"]
+  J --> D[".99 : nom et site<br/>manquants"]
   D --> E["fillna : inconnu"]
 ```
 

@@ -1,5 +1,10 @@
 """Qualifier le parc : compléter les repères TODO, puis exécuter un bloc à la fois."""
 
+# REPÈRE DÉBUTANT : suivre un seul bloc # === à la fois depuis le README.
+# VOTRE TRAVAIL : les TODO indiqués dans l’énoncé, parfois dans un autre fichier.
+# FOURNI : admin_tools prépare les fichiers, les services et le bilan ; ce code
+# appartient au cours. Il n’est pas nécessaire de le réécrire pour réussir le TP.
+
 # SEUL FICHIER À MODIFIER : cinq TODO dans les blocs TYPES, BOUCLES et MASQUES.
 # Conserver les imports, les repères # ===, les données et les calculs fournis.
 # Après chaque modification : enregistrer puis lancer le contrôle de l'étape.

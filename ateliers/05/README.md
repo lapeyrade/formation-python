@@ -1,5 +1,7 @@
 # TP 05 — Enrichir et conserver les rapports du SI
 
+**Première lecture :** [repérer votre travail et les aides fournies](../../docs/lire-le-code.md).
+
 [Retour au parcours](../../README.md) — **100 minutes**, essais et autocorrection compris.
 
 ## Mission et production
@@ -12,17 +14,18 @@ Linux de formation ; les données du parc restent fictives.
 Les quatre blocs sont autonomes. Les réponses Web ne sont pas automatiquement ajoutées aux lignes SQLite.
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart LR
   accTitle: Les quatre blocs indépendants du TP05
   accDescr: Le rapport CSV est importé dans SQLite puis interrogé. requests normalise les réponses d’une API. Scrapy extrait une page HTML. Les fichiers CSV et Excel sont archivés et leurs membres sont relus.
   C["Rapport CSV fourni"] --> B["Importer dans SQLite"]
-  B --> Q["Sélection SQL des alertes"]
-  API["Réponse HTTP de l’API"] --> REQ["requests : vérifier et normaliser"]
-  REQ --> GEO["Résultat avec source et statut"]
-  H["Page HTML de test"] --> S["Scrapy : extraire les champs"]
+  B --> Q["Sélection SQL des<br/>alertes"]
+  API["Réponse HTTP de l’API"] --> REQ["requests : vérifier et<br/>normaliser"]
+  REQ --> GEO["Résultat avec source<br/>et statut"]
+  H["Page HTML de test"] --> S["Scrapy : extraire les<br/>champs"]
   S --> JSON["Résultats JSON"]
-  F["Rapports CSV et Excel fournis"] --> A["Créer ZIP et tar.gz"]
-  A --> V["Relire membres et octets"]
+  F["Rapports CSV et Excel<br/>fournis"] --> A["Créer ZIP et tar.gz"]
+  A --> V["Relire membres et<br/>octets"]
 ```
 
 SQLite est un fichier local. Les services Web de test tournent dans le poste ; l’appel public guidé garde une source
@@ -195,6 +198,7 @@ comparer à période identique avant d’annoncer une amélioration.
 ### Distinguer HTTP et résultat métier
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart TD
   A["Requête avec délai"] --> B{"HTTP et JSON valides ?"}
   B -->|Non| E["erreur"]

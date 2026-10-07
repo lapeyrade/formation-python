@@ -15,19 +15,20 @@ message.eml. Le SMTP reste local et aucun accès SSH n’est lancé. Chaque nouv
 ## Voir le chemin de la donnée
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart TD
   accTitle: Du journal fourni à la pièce jointe relue
   accDescr: Les événements du journal sont comptés puis rapprochés de l’inventaire. Le rapport complet est conservé dans SQLite. Une sélection d’alertes est exportée puis archivée, transmise au SMTP local et comparée à la pièce jointe du message capturé.
-  L["auth.log : événements fournis"] --> C["analyser_logs : compteurs"]
-  C --> R["rapprocher : rapport complet"]
+  L["auth.log : événements<br/>fournis"] --> C["analyser_logs :<br/>compteurs"]
+  C --> R["rapprocher : rapport<br/>complet"]
   I["Inventaire fourni"] --> R
-  R --> F["exporter : rapport_complet.csv"]
-  F --> B["importer_csv : incidents.sqlite"]
-  B --> A["lire_alertes : sélection selon le seuil"]
-  A --> E["exporter : alertes.csv et alertes.xlsx"]
+  R --> F["exporter :<br/>rapport_complet.csv"]
+  F --> B["importer_csv :<br/>incidents.sqlite"]
+  B --> A["lire_alertes :<br/>sélection selon le<br/>seuil"]
+  A --> E["exporter : alertes.csv<br/>et alertes.xlsx"]
   E --> Z["archiver : rapport.zip"]
-  Z --> S["envoyer_archive : SMTP de capture"]
-  S --> M["message.eml : pièce jointe relue"]
+  Z --> S["envoyer_archive : SMTP<br/>de capture"]
+  S --> M["message.eml : pièce<br/>jointe relue"]
 ```
 
 Le seuil change la sélection, pas le rapport complet ni les lignes conservées dans la base.

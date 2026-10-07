@@ -1,5 +1,7 @@
 # TP 02 — Fiabiliser un import et réutiliser son code
 
+**Première lecture :** [repérer votre travail et les aides fournies](../../docs/lire-le-code.md).
+
 [Retour au parcours](../../README.md) — **100 minutes**, essais et autocorrection compris.
 
 ## Mission et production
@@ -13,16 +15,17 @@ L’import applique vos règles réutilisables à chaque ligne. Une anomalie de 
 inaccessible empêche l’import.
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart TD
   accTitle: Valider un import sans perdre les rejets
   accDescr: Le lecteur CSV transmet chaque ligne à la validation. Les lignes valides alimentent le parc normalisé et les anomalies alimentent un rapport de rejets. Une erreur d’accès à la source arrête le traitement.
-  S["parc_source.csv"] --> L["Lire avec csv.DictReader"]
-  L --> V{"Ligne conforme au contrat ?"}
-  V -->|Oui| M["Conserver la machine normalisée"]
-  V -->|Non| R["Conserver ligne et motif du rejet"]
-  M --> E["Exporter le parc exploitable"]
+  S["parc_source.csv"] --> L["Lire avec<br/>csv.DictReader"]
+  L --> V{"Ligne conforme au<br/>contrat ?"}
+  V -->|Oui| M["Conserver la machine<br/>normalisée"]
+  V -->|Non| R["Conserver ligne et<br/>motif du rejet"]
+  M --> E["Exporter le parc<br/>exploitable"]
   R --> J["Exporter les rejets"]
-  S -.->|Source inaccessible| X["Arrêter et signaler l’échec"]
+  S -.->|Source inaccessible| X["Arrêter et signaler<br/>l’échec"]
 ```
 
 Les blocs sur la mutabilité et les fichiers permettent de fiabiliser ces règles avant l’import complet.
@@ -198,6 +201,7 @@ La règle de nommage doit aussi fonctionner sur une valeur venant d’un CSV, d�
 ### Deux noms ou deux listes ?
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart LR
   A["original"] --> L["Liste : ssh"]
   B["copie = original"] --> L

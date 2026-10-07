@@ -1,5 +1,7 @@
 # Python pour l’administration système
 
+Vous découvrez Python ? Consultez [comment lire les fichiers et repérer votre travail](docs/lire-le-code.md).
+
 Automatisez une intervention sur un parc : inventaire, adressage, diagnostic Linux, analyse d’incidents et collecte SSH.
 Vous débutez en Python ? Commencez par l’[atelier 0 : les bases de Python](ateliers/00/README.md), guidé sur 1 h 30.
 Six TP d’administration système prolongent cette introduction avec leurs données, aides, corrigés et contrôles.

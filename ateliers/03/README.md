@@ -1,5 +1,7 @@
 # TP 03 — Préparer un adressage et diagnostiquer un hôte
 
+**Première lecture :** [repérer votre travail et les aides fournies](../../docs/lire-le-code.md).
+
 [Retour au parcours](../../README.md) — **100 minutes**, essais et autocorrection compris.
 
 ## Mission et production
@@ -12,16 +14,17 @@ formation ; les données du parc restent fictives.
 La bibliothèque est commune aux deux clients. Le diagnostic observe séparément le poste qui exécute Python.
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart TD
   accTitle: Réutiliser une bibliothèque et observer le poste
   accDescr: Les deux clients generer et resumer importent la même bibliothèque ma_boite. Une branche indépendante collecte les observations du poste et produit le diagnostic puis son interprétation.
-  B["ma_boite : générateur et classe Machine"] --> G["generer.py"]
+  B["ma_boite : générateur<br/>et classe Machine"] --> G["generer.py"]
   B --> R["resumer.py"]
-  G --> A["generer.txt : adresses candidates"]
-  R --> T["resumer.txt : identité et état déclaré"]
-  P["Poste de travail réel"] --> C["Collecter identité, disque et commandes"]
+  G --> A["generer.txt : adresses<br/>candidates"]
+  R --> T["resumer.txt : identité<br/>et état déclaré"]
+  P["Poste de travail réel"] --> C["Collecter identité,<br/>disque et commandes"]
   C --> D["Diagnostic horodaté"]
-  D --> I["Observation, conclusion, prochaine action"]
+  D --> I["Observation,<br/>conclusion, prochaine<br/>action"]
 ```
 
 Une adresse candidate est issue du plan fourni ; elle n’est pas une preuve de disponibilité sur le réseau.
@@ -78,10 +81,11 @@ contrôle et explication (10 min).
 ### Un générateur se consomme
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart LR
-  A["generer_ips : nouveau générateur g"] --> B["list(g) : six adresses"]
-  B --> C["list(g) à nouveau : liste vide"]
-  D["Nouvel appel à generer_ips"] --> E["Nouveau parcours : six adresses"]
+  A["generer_ips : nouveau<br/>générateur g"] --> B["list(g) : six adresses"]
+  B --> C["list(g) à nouveau :<br/>liste vide"]
+  D["Nouvel appel à<br/>generer_ips"] --> E["Nouveau parcours : six<br/>adresses"]
 ```
 
 Le second parcours du même objet est vide ; un nouvel appel crée un générateur indépendant.

@@ -1,5 +1,7 @@
 # TP 01 — Qualifier un parc et préparer ses réseaux
 
+**Première lecture :** [repérer votre travail et les aides fournies](../../docs/lire-le-code.md).
+
 [Retour au parcours](../../README.md) — **85 minutes indicatives**, essais et autocorrection compris.
 
 Vous débutez en Python ? Faites d’abord l’[atelier 0](../00/README.md). Si les boucles ou les listes ne sont pas encore
@@ -46,12 +48,13 @@ Les exemples « Comprendre » servent à lire la syntaxe ; ne les ajoutez pas à
 ## Vue d’ensemble
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart TD
   accTitle: Les trois traitements du TP01
   accDescr: Le parc est normalisé pour produire un bilan et utilisé pour prioriser les contrôles. Le plan réseau sert au calcul des masques. Les trois blocs alimentent le bilan du TP.
   P["Parc fourni"] --> N["Normaliser les valeurs"]
-  P --> C["Filtrer et borner les essais"]
-  Z["Zones et préfixes réseau"] --> M["Calculer les masques"]
+  P --> C["Filtrer et borner les<br/>essais"]
+  Z["Zones et préfixes<br/>réseau"] --> M["Calculer les masques"]
   N --> B["Bilan dans sorties/"]
   C --> B
   M --> B

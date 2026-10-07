@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 from invoke.exceptions import CommandTimedOut, UnexpectedExit
 from paramiko import SSHException
 
+# Aide du cours : configure Fabric et vérifie les clés SSH du laboratoire.
+# connexion n’est pas une fonction standard de Python ni le nom de la classe Fabric.
 from admin_tools.distant import connexion
 
 

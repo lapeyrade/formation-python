@@ -1,5 +1,10 @@
 """Fiabiliser l'import : compléter les TODO ; lectures et sorties sont guidées."""
 
+# REPÈRE DÉBUTANT : suivre un seul bloc # === à la fois depuis le README.
+# VOTRE TRAVAIL : les TODO indiqués dans l’énoncé, parfois dans un autre fichier.
+# FOURNI : admin_tools prépare les fichiers, les services et le bilan ; ce code
+# appartient au cours. Il n’est pas nécessaire de le réécrire pour réussir le TP.
+
 import csv
 import ipaddress
 import json

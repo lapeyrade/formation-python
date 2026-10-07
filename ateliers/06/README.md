@@ -1,5 +1,7 @@
 # TP 06 — Collecter à distance et diffuser les alertes
 
+**Première lecture :** [repérer votre travail et les aides fournies](../../docs/lire-le-code.md).
+
 [Retour au parcours](../../README.md) — **70 minutes**, essais et autocorrection compris.
 
 **Parcours obligatoire : une seule VM.** Avant le TP, suivez la [préparation SSH locale](../../laboratoire/README.md).
@@ -18,18 +20,19 @@ Le dernier bloc réutilise les fonctions validées. Le diagnostic et, si elle es
 appartiennent au même essai.
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart TD
   accTitle: Constituer et transmettre un rapport contrôlé
   accDescr: Le rapport CSV est importé puis filtré pour produire les alertes. Le diagnostic rejoint l’archive. Une collecte fournie doit être complète ; sinon la diffusion est bloquée. Le ZIP est envoyé au SMTP de capture puis sa pièce jointe est relue.
-  C["Rapport CSV"] --> B["SQLite puis sélection des alertes"]
-  B --> A["Archive ZIP de cet essai"]
-  D["Diagnostic local de cet essai"] --> A
+  C["Rapport CSV"] --> B["SQLite puis sélection<br/>des alertes"]
+  B --> A["Archive ZIP de cet<br/>essai"]
+  D["Diagnostic local de<br/>cet essai"] --> A
   S["Collecte SSH demandée"] --> V{"Collecte complète ?"}
   V -->|Oui| A
   V -->|Non| X["Bloquer la diffusion"]
   A --> SMTP["SMTP local de capture"]
   SMTP --> E["message.eml"]
-  E --> P["Comparer la pièce reçue au ZIP"]
+  E --> P["Comparer la pièce<br/>reçue au ZIP"]
 ```
 
 Sans collecte demandée, le scénario reste local et annonce `non_executee`. La capture SMTP ne livre aucun message à une
@@ -195,16 +198,17 @@ Non : soumission, livraison et lecture sont des étapes différentes.
 ## Fabric et Ansible sur votre VM — 40 min
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart TD
   accTitle: Collecter puis vérifier un état distant
   accDescr: Fabric collecte les cibles configurées. Une collecte incomplète est conservée et bloque la suite. Après une collecte complète, le pilote Ansible prépare le dossier et les preuves, puis prévisualise, applique et rejoue la configuration avant de vérifier contenu et permissions.
-  I["Inventaire : une cible locale"] --> F["Fabric : collecter chaque cible"]
-  F --> C{"Toutes les cibles déclarées ont répondu ?"}
-  C -->|Non| E["Conserver les résultats et arrêter"]
-  C -->|Oui| D["Ansible : préparer le dossier et les preuves"]
-  D --> P["Prévisualiser la configuration : check / diff"]
-  P --> A["Appliquer puis rejouer le même état"]
-  A --> V["Relire contenu, permissions et récapitulatifs"]
+  I["Inventaire : une cible<br/>locale"] --> F["Fabric : collecter<br/>chaque cible"]
+  F --> C{"Toutes les cibles<br/>déclarées ont répondu<br/>?"}
+  C -->|Non| E["Conserver les<br/>résultats et arrêter"]
+  C -->|Oui| D["Ansible : préparer le<br/>dossier et les preuves"]
+  D --> P["Prévisualiser la<br/>configuration : check<br/>/ diff"]
+  P --> A["Appliquer puis rejouer<br/>le même état"]
+  A --> V["Relire contenu,<br/>permissions et<br/>récapitulatifs"]
 ```
 
 La prévisualisation concerne la configuration ; la préparation du dossier et des preuves précède ce contrôle. Le détail
@@ -421,14 +425,15 @@ contrôle.
 ### Ce qui entre dans le ZIP final
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
 flowchart LR
-  A["Rapport CSV"] --> B["SQLite : sélectionner les alertes"]
-  B --> C["alertes.csv et alertes.xlsx"]
+  A["Rapport CSV"] --> B["SQLite : sélectionner<br/>les alertes"]
+  B --> C["alertes.csv et<br/>alertes.xlsx"]
   D["diagnostic.json"] --> Z["rapport.zip"]
-  E["collecte.csv si fournie et complète"] --> Z
+  E["collecte.csv si<br/>fournie et complète"] --> Z
   C --> Z
   Z --> S["SMTP local de capture"]
-  S --> M["message.eml : preuve de réception locale"]
+  S --> M["message.eml : preuve<br/>de réception locale"]
 ```
 
 Le diagnostic est toujours joint ; la collecte dépend du parcours réalisé. Le journal, les clés et l’inventaire SSH

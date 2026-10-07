@@ -15,19 +15,30 @@ fichiers. Avec un téléchargement ZIP, récupérez une nouvelle copie dans un a
 
 ```sh
 uv sync --locked
-uv run python ateliers/00/01_variables.py
 ```
 
 Les premiers résultats sont volontairement incomplets. Modifiez le fichier dans l’éditeur, enregistrez-le, puis
 relancez la commande dans le terminal. Ne tapez pas les commandes `uv run` dans l’interpréteur Python (`>>>`).
 Les scripts manipulent des données fictives : ils n’effectuent aucune opération sur votre système.
 
-## Comment avancer
+## Votre première action
 
-Pour chaque étape : lisez l’exemple, prédisez son résultat, complétez les TODO, exécutez et vérifiez. Gardez le corrigé
-fermé jusqu’à votre premier essai. Un contrôle « À revoir » est normal tant que le fichier reste à compléter.
-Les contrôles comparent les affichages attendus : expliquez aussi votre code pour vérifier votre compréhension.
-Les chaînes affichées, leur casse et leur ordre comptent ; retirez les affichages de débogage avant la vérification.
+**Ouvrez `ateliers/00/01_variables.py` dans votre éditeur, puis suivez l’étape 1 ci-dessous.**
+Les fichiers existent déjà : vous n’avez pas de fichier à créer et vous ne recopiez pas tout le cours.
+
+## La méthode pour chaque étape
+
+1. **Ouvrez le fichier indiqué** dans l’éditeur. Un `TODO` est un commentaire qui signale le travail à faire.
+2. **Appliquez les modifications numérotées**, puis enregistrez avec Ctrl+S (Cmd+S sur macOS).
+3. **Exécutez la première commande** dans le terminal pour voir ce que votre programme affiche.
+4. **Exécutez la commande de vérification.** Passez à l’étape suivante quand elle affiche `Conforme`.
+
+Si le contrôle affiche `À revoir`, comparez « Attendu » et « Obtenu », corrigez le fichier et relancez les commandes.
+Les valeurs provisoires des fichiers de départ sont volontairement fausses : ce n’est pas un problème d’installation.
+Ne modifiez pas `attendus.json`, `verifier.py` ni le dossier `corriges/` pour faire réussir les contrôles.
+
+Les exemples de la rubrique « Comprendre » servent de modèles : **ils ne sont pas à coller dans votre fichier**.
+Le corrigé est replié sous chaque étape ; ouvrez-le après un premier essai si vous bloquez.
 
 | Étape | Sujet | Durée |
 | --- | --- | --- |
@@ -40,9 +51,50 @@ Les chaînes affichées, leur casse et leur ordre comptent ; retirez les afficha
 
 ## 1. Variables et calculs — 10 min
 
+**Objectif :** Afficher le nom, la mémoire libre et l’état d’un serveur.
+
+**Ouvrez ce fichier :** [ateliers/00/01_variables.py](01_variables.py).
+
+### 1A. Ce que vous devez modifier
+
+1. Remplacez `nom = ""` par une affectation du texte `"srv-web-01"` à `nom`.
+2. Remplacez le `0` de `ram_libre` par le calcul `ram_totale - ram_utilisee`.
+3. Remplacez `False` par `True` dans la ligne qui définit `actif`.
+
+**À conserver :** Gardez `ram_totale`, `ram_utilisee` et les trois lignes `print(...)` fournis.
+
+### 1B. Exécuter votre programme
+
+Enregistrez le fichier. Dans le terminal, à la racine du projet, lancez :
+
+```sh
+uv run python ateliers/00/01_variables.py
+```
+
+Vous devez obtenir ces lignes, dans cet ordre :
+
+```text
+srv-web-01
+10
+True
+```
+
+### 1C. Vérifier et passer à la suite
+
+```sh
+uv run python ateliers/00/verifier.py 1
+```
+
+**Étape terminée quand le contrôle affiche `01_variables : Conforme`.**
+Avant de continuer, expliquez ce que calculent les lignes que vous avez modifiées.
+
+### 1D. Comprendre les instructions utilisées
+
 Une variable associe un nom à une valeur. `=` affecte une valeur ; `print()` l’affiche. Python distingue le texte
 (`str`), les entiers (`int`), les nombres décimaux (`float`) et les booléens (`bool`, `True` ou `False`).
 Les commentaires commencent par `#` et ne sont pas exécutés.
+
+Exemple à lire (ne pas le copier dans votre exercice) :
 
 ```python
 service = "web"
@@ -50,24 +102,6 @@ instances = 2
 print(service)
 print(instances * 4)
 print(type(instances).__name__)  # int
-```
-
-Complétez le nom du serveur, calculez la mémoire libre par soustraction et indiquez que le serveur est actif.
-Ne mettez pas de guillemets autour d’un nombre ou de `True`.
-
-**Fichier à compléter :** [01_variables.py](01_variables.py).
-
-```sh
-uv run python ateliers/00/01_variables.py
-uv run python ateliers/00/verifier.py 1
-```
-
-Affichage attendu :
-
-```text
-srv-web-01
-10
-True
 ```
 
 <details>
@@ -94,32 +128,56 @@ uv run python ateliers/00/corriges/01_variables.py
 
 ## 2. Nettoyer et convertir du texte — 15 min
 
-Une méthode est une opération attachée à une valeur : `texte.strip()` retire les espaces aux extrémités,
-`texte.lower()` passe en minuscules. Ces méthodes produisent une nouvelle chaîne.
-`int("12")` convertit du texte en entier. Une f-string insère une valeur entre accolades.
+**Objectif :** Transformer des données textuelles en un nom propre et un port numérique.
 
-```python
-service = " SSH ".strip().lower()
-port = int("22")
-print(f"{service} utilise le port {port}")
-```
+**Ouvrez ce fichier :** [ateliers/00/02_texte.py](02_texte.py).
 
-Nettoyez le nom, convertissez le port en entier et construisez le message demandé. Comparez ensuite
-`"22" + "1"` et `int("22") + 1` dans un petit fichier : concaténation et addition sont différentes.
+### 2A. Ce que vous devez modifier
 
-**Fichier à compléter :** [02_texte.py](02_texte.py).
+1. Sur la ligne `nom = ...`, appliquez `.strip().lower()` à `nom_brut`.
+2. Sur la ligne `port = ...`, remplacez `0` par `int(port_brut)`.
+3. Sur la ligne `message = ...`, écrivez une f-string qui assemble `nom`, le caractère `:` et `port`.
+
+**À conserver :** Gardez les données brutes et les trois `print(...)`. La deuxième ligne affiche volontairement
+`port + 1`, soit 23.
+
+### 2B. Exécuter votre programme
+
+Enregistrez le fichier. Dans le terminal, à la racine du projet, lancez :
 
 ```sh
 uv run python ateliers/00/02_texte.py
-uv run python ateliers/00/verifier.py 2
 ```
 
-Affichage attendu :
+Vous devez obtenir ces lignes, dans cet ordre :
 
 ```text
 srv-web-01
 23
 srv-web-01:22
+```
+
+### 2C. Vérifier et passer à la suite
+
+```sh
+uv run python ateliers/00/verifier.py 2
+```
+
+**Étape terminée quand le contrôle affiche `02_texte : Conforme`.**
+Avant de continuer, expliquez ce que calculent les lignes que vous avez modifiées.
+
+### 2D. Comprendre les instructions utilisées
+
+Une méthode est une opération attachée à une valeur : `texte.strip()` retire les espaces aux extrémités,
+`texte.lower()` passe en minuscules. Ces méthodes produisent une nouvelle chaîne.
+`int("12")` convertit du texte en entier. Une f-string insère une valeur entre accolades.
+
+Exemple à lire (ne pas le copier dans votre exercice) :
+
+```python
+service = " SSH ".strip().lower()
+port = int("22")
+print(f"{service} utilise le port {port}")
 ```
 
 <details>
@@ -146,32 +204,55 @@ uv run python ateliers/00/corriges/02_texte.py
 
 ## 3. Listes et dictionnaires — 15 min
 
+**Objectif :** Ajouter un serveur et retrouver des informations dans deux collections.
+
+**Ouvrez ce fichier :** [ateliers/00/03_collections.py](03_collections.py).
+
+### 3A. Ce que vous devez modifier
+
+1. Sous la liste `serveurs`, ajoutez une ligne `serveurs.append(...)` avec le texte `"srv-backup-01"`.
+2. Remplacez la valeur de `premier` par `serveurs[0]` pour lire le premier élément.
+3. Remplacez la valeur de `nom_machine` par `machine["nom"]` pour lire la clé `nom`.
+
+**À conserver :** Gardez le dictionnaire `machine` et les trois `print(...)` fournis.
+
+### 3B. Exécuter votre programme
+
+Enregistrez le fichier. Dans le terminal, à la racine du projet, lancez :
+
+```sh
+uv run python ateliers/00/03_collections.py
+```
+
+Vous devez obtenir ces lignes, dans cet ordre :
+
+```text
+3
+srv-web-01
+srv-web-01
+```
+
+### 3C. Vérifier et passer à la suite
+
+```sh
+uv run python ateliers/00/verifier.py 3
+```
+
+**Étape terminée quand le contrôle affiche `03_collections : Conforme`.**
+Avant de continuer, expliquez ce que calculent les lignes que vous avez modifiées.
+
+### 3D. Comprendre les instructions utilisées
+
 Une liste rassemble des valeurs dans un ordre. Son premier indice est **0**. `len(liste)` donne sa longueur
 et `liste.append(valeur)` ajoute une valeur à la fin. Un dictionnaire associe des clés à des valeurs.
+
+Exemple à lire (ne pas le copier dans votre exercice) :
 
 ```python
 services = ["ssh", "web"]
 print(services[0])  # ssh
 machine = {"nom": "srv-test", "port": 22}
 print(machine["port"])  # 22
-```
-
-Ajoutez le troisième serveur à la liste et lisez le nom dans le dictionnaire. Ne confondez pas l’indice numérique
-d’une liste avec la clé textuelle d’un dictionnaire. Une clé absente provoque `KeyError`.
-
-**Fichier à compléter :** [03_collections.py](03_collections.py).
-
-```sh
-uv run python ateliers/00/03_collections.py
-uv run python ateliers/00/verifier.py 3
-```
-
-Affichage attendu :
-
-```text
-3
-srv-web-01
-srv-web-01
 ```
 
 <details>
@@ -198,9 +279,49 @@ uv run python ateliers/00/corriges/03_collections.py
 
 ## 4. Prendre une décision — 20 min
 
+**Objectif :** Calculer un état à partir de l’activité et de la charge du serveur.
+
+**Ouvrez ce fichier :** [ateliers/00/04_conditions.py](04_conditions.py).
+
+### 4A. Ce que vous devez modifier
+
+1. À la place des commentaires TODO, avant `print(etat)`, écrivez un bloc `if not actif:`.
+2. Dans ce bloc, avec quatre espaces, affectez `"hors ligne"` à `etat`.
+3. Ajoutez `elif charge >= 80:` au même niveau que `if`, puis affectez `"alerte"` à `etat` dans son bloc.
+4. Ajoutez `else:` au même niveau que `if`, puis affectez `"normal"` à `etat` dans son bloc.
+
+**À conserver :** Gardez `actif = True`, `charge = 85` et `print(etat)` pour le premier contrôle.
+
+### 4B. Exécuter votre programme
+
+Enregistrez le fichier. Dans le terminal, à la racine du projet, lancez :
+
+```sh
+uv run python ateliers/00/04_conditions.py
+```
+
+Vous devez obtenir ces lignes, dans cet ordre :
+
+```text
+alerte
+```
+
+### 4C. Vérifier et passer à la suite
+
+```sh
+uv run python ateliers/00/verifier.py 4
+```
+
+**Étape terminée quand le contrôle affiche `04_conditions : Conforme`.**
+Avant de continuer, expliquez ce que calculent les lignes que vous avez modifiées.
+
+### 4D. Comprendre les instructions utilisées
+
 `if` exécute un bloc si la condition est vraie. `elif` teste un autre cas et `else` traite les cas restants.
 Les deux-points et l’indentation (quatre espaces) sont obligatoires. `==` compare ; `=` affecte.
 On dispose aussi de `>=`, `<`, `!=`, `and`, `or` et `not`.
+
+Exemple à lire (ne pas le copier dans votre exercice) :
 
 ```python
 charge = 65
@@ -208,23 +329,6 @@ if charge >= 80:
     print("alerte")
 else:
     print("normal")
-```
-
-Écrivez une décision à trois branches : serveur inactif → `hors ligne` ; sinon charge au moins égale à 80 → `alerte` ;
-sinon → `normal`. Essayez ensuite les trois cas en changeant les données, puis rétablissez `True` et `85`
-pour le contrôle automatique.
-
-**Fichier à compléter :** [04_conditions.py](04_conditions.py).
-
-```sh
-uv run python ateliers/00/04_conditions.py
-uv run python ateliers/00/verifier.py 4
-```
-
-Affichage attendu :
-
-```text
-alerte
 ```
 
 <details>
@@ -250,32 +354,59 @@ uv run python ateliers/00/corriges/04_conditions.py
 
 </details>
 
+**Pour vérifier les autres branches :** remplacez temporairement `actif` par `False` et exécutez le script :
+le résultat doit être `hors ligne`. Essayez ensuite `actif = True` et `charge = 30` : vous devez obtenir `normal`.
+Rétablissez `actif = True` et `charge = 85` avant de relancer le vérificateur.
+
 ## 5. Parcourir un petit parc — 15 min
 
-`for` parcourt chaque élément d’une collection. Une variable d’accumulation est initialisée avant la boucle.
-`+= 1` augmente une valeur de un. Pour filtrer, placez un `if` dans le bloc `for`.
+**Objectif :** Afficher et compter uniquement les machines actives du parc.
 
-```python
-for service in ["ssh", "web"]:
-    print(service)
-```
+**Ouvrez ce fichier :** [ateliers/00/05_boucles.py](05_boucles.py).
 
-Parcourez les dictionnaires du parc. Affichez uniquement les noms des machines actives, puis leur nombre.
-Gardez le dernier `print` après la boucle : il affiche le total une seule fois.
+### 5A. Ce que vous devez modifier
 
-**Fichier à compléter :** [05_boucles.py](05_boucles.py).
+1. Dans la boucle `for` fournie, remplacez `pass` par `if machine["actif"]:` (quatre espaces avant `if`).
+2. Dans ce `if`, écrivez `print(machine["nom"])` (huit espaces avant `print`).
+3. Toujours dans ce `if`, ajoutez `compteur += 1` avec la même indentation.
+
+**À conserver :** Gardez les données, `compteur = 0` avant la boucle et le dernier `print(...)` hors de la boucle.
+
+### 5B. Exécuter votre programme
+
+Enregistrez le fichier. Dans le terminal, à la racine du projet, lancez :
 
 ```sh
 uv run python ateliers/00/05_boucles.py
-uv run python ateliers/00/verifier.py 5
 ```
 
-Affichage attendu :
+Vous devez obtenir ces lignes, dans cet ordre :
 
 ```text
 srv-web-01
 srv-backup-01
 Actives : 2
+```
+
+### 5C. Vérifier et passer à la suite
+
+```sh
+uv run python ateliers/00/verifier.py 5
+```
+
+**Étape terminée quand le contrôle affiche `05_boucles : Conforme`.**
+Avant de continuer, expliquez ce que calculent les lignes que vous avez modifiées.
+
+### 5D. Comprendre les instructions utilisées
+
+`for` parcourt chaque élément d’une collection. Une variable d’accumulation est initialisée avant la boucle.
+`+= 1` augmente une valeur de un. Pour filtrer, placez un `if` dans le bloc `for`.
+
+Exemple à lire (ne pas le copier dans votre exercice) :
+
+```python
+for service in ["ssh", "web"]:
+    print(service)
 ```
 
 <details>
@@ -305,8 +436,49 @@ uv run python ateliers/00/corriges/05_boucles.py
 
 ## 6. Réutiliser un traitement — 15 min
 
+**Objectif :** Écrire une fonction qui indique si un serveur est prioritaire.
+
+**Ouvrez ce fichier :** [ateliers/00/06_fonctions.py](06_fonctions.py).
+
+### 6A. Ce que vous devez modifier
+
+1. Dans `est_prioritaire`, repérez la ligne `return False` : c’est la seule ligne de code à modifier.
+2. Remplacez `False` par une expression qui combine `actif` et `charge >= 80` avec `and`.
+3. Gardez `return` et les quatre espaces au début de la ligne : la fonction doit renvoyer le résultat.
+
+**À conserver :** Gardez la définition `def ...` et les trois appels `print(est_prioritaire(...))` fournis.
+
+### 6B. Exécuter votre programme
+
+Enregistrez le fichier. Dans le terminal, à la racine du projet, lancez :
+
+```sh
+uv run python ateliers/00/06_fonctions.py
+```
+
+Vous devez obtenir ces lignes, dans cet ordre :
+
+```text
+True
+False
+False
+```
+
+### 6C. Vérifier et passer à la suite
+
+```sh
+uv run python ateliers/00/verifier.py 6
+```
+
+**Étape terminée quand le contrôle affiche `06_fonctions : Conforme`.**
+Avant de continuer, expliquez ce que calculent les lignes que vous avez modifiées.
+
+### 6D. Comprendre les instructions utilisées
+
 `def` définit une fonction. Ses paramètres reçoivent les valeurs transmises lors de l’appel.
 `return` renvoie un résultat et termine cet appel ; `print` affiche du texte mais ne remplace pas `return`.
+
+Exemple à lire (ne pas le copier dans votre exercice) :
 
 ```python
 def doubler(nombre):
@@ -315,25 +487,6 @@ def doubler(nombre):
 
 resultat = doubler(4)
 print(resultat)  # 8
-```
-
-Complétez `est_prioritaire` : une machine est prioritaire si elle est active **et** si sa charge atteint 80.
-Renvoyez un booléen. Les trois appels vérifient une machine chargée, une machine arrêtée et une machine peu chargée.
-Pour finir, expliquez oralement le rôle de chaque ligne avant d’ouvrir le corrigé.
-
-**Fichier à compléter :** [06_fonctions.py](06_fonctions.py).
-
-```sh
-uv run python ateliers/00/06_fonctions.py
-uv run python ateliers/00/verifier.py 6
-```
-
-Affichage attendu :
-
-```text
-True
-False
-False
 ```
 
 <details>

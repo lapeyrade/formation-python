@@ -30,27 +30,42 @@ flowchart TD
 Sans collecte demandée, le scénario reste local et annonce `non_executee`. La capture SMTP ne livre aucun message à une
 boîte externe.
 
-## Fichiers et démarrage
+## Où travailler et quoi modifier
 
-Compléter mes_collectes.py (collecte unitaire et erreurs par cible), puis lire distant.py et mes_fonctions.py. L’option
---laboratoire signifie exécuter les accès SSH configurés et Ansible natif ; Docker n’est utilisé que si les cibles de
-secours ont été choisies. Sans cette option, la partie distante est explicitement non exécutée.
+**Commencez par la première ligne du tableau ci-dessous.** Les fichiers existent déjà ; ouvrez-les dans l’éditeur.
+Les chemins du tableau sont relatifs à ce dossier de TP. Enregistrez après chaque modification.
 
-```sh
-uv run python ateliers/06/depart.py
-uv run python outils/verifier.py tp06 --complet
+| Étape | Fichier à ouvrir | Travail demandé |
+| --- | --- | --- |
+| [email](#email) | [depart.py](depart.py) | Adapter le sujet et contrôler la pièce reçue |
+| [distant](#distant) | [mes_collectes.py](mes_collectes.py) | Une extraction disque, puis des manipulations guidées |
+| [integration](#integration) | [depart.py](depart.py) | Assembler l’archive, envoyer puis compter |
+
+Les imports, les données de référence, les repères `# ===` et l’enregistrement des résultats sont fournis.
+Ne réécrivez pas tout le script et ne remplacez pas les calculs par les résultats attendus.
+`TODO` signifie « partie à compléter » ; les exemples et extraits du README sont à lire, pas à copier en bloc.
+
+Toutes les commandes se lancent dans un terminal à la racine du projet, où se trouve `pyproject.toml`.
+Si nécessaire, préparez l’environnement avec `uv sync --locked`. Avancez avec le contrôle de chaque étape ;
+le contrôle complet n’est demandé qu’à la fin. Un résultat `À revoir` est normal avant de compléter votre code.
+Le vérificateur relance l’étape et compare vos productions. Les chemins de sorties changent à chaque essai.
+
+**Environnement :** les étapes `email` et `integration` peuvent tourner localement ; `distant` exige deux cibles Linux
+SSH préparées. Les identifiants RustDesk ne sont pas des identifiants SSH.
+
+## Voir les données avant de coder
+
+Extrait réel de [donnees/rapport_complet.csv](../../donnees/rapport_complet.csv) :
+
+```csv
+ip,nom,site,echecs
+192.0.2.1,srv-paris-web-01,paris,3
+192.0.2.2,srv-paris-web-02,paris,2
+192.0.2.99,inconnu,inconnu,1
 ```
 
-Les commandes se lancent à la racine du projet dans le terminal Linux. Les valeurs « À compléter » sont normales au
-départ. Complétez les repères TODO et conservez les données de référence. Les lectures, les chemins et une partie des
-contrôles sont fournis ; le fichier de départ peut déjà produire des sorties incomplètes. Chaque essai produit un
-dossier dans sorties/ ; le vérificateur relance votre code.
-
-## Travailler avec les amorces
-
-Les repères `TODO` désignent le travail à compléter. Lire aussi les lignes fournies : leur rôle doit pouvoir être
-expliqué. Garder le dernier tiers de chaque créneau pour lancer, lire les résultats et répondre à la question de
-transfert. Les corrigés détaillent les décisions et restent dans des fichiers séparés pour comparer votre version.
+Ce rapport contient **trois lignes**, dont **deux alertes** au seuil de deux échecs. Il est fourni : terminer le TP
+précédent n’est pas nécessaire pour le retrouver.
 
 ## Parcours
 
@@ -65,37 +80,31 @@ l’exécution et au contrôle. La préparation des accès est extérieure au bu
 
 ## Message et pièce jointe — 15 min
 
-**Mise en pratique.** Transmettre un rapport d’alerte et vérifier la pièce effectivement reçue.
+**Votre objectif :** Adapter le sujet et contrôler la pièce reçue.
 
-**À écrire :** Le sujet du message et la comparaison des octets de la pièce jointe.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === EMAIL`.
 
-**Fourni :** Création ZIP, construction/envoi du message, SMTP de capture et relecture MIME.
+**À faire dans l’ordre :**
 
-**À observer :** Le sujet et les octets réellement reçus.
+1. Dans le bloc EMAIL, remplacez le sujet `"À compléter"` par `"Rapport PYX : 2 alertes"`.
+2. Dans `resultat`, remplacez `octets_identiques: None` (clé entre guillemets) par la comparaison entre
+   `pieces[0].get_payload(decode=True)` et `archive.read_bytes()`.
+3. Gardez le serveur SMTP de capture : aucun message ne doit partir vers une vraie boîte mail.
 
-1. Créer rapport.zip depuis le CSV de référence avec archiver fourni.
-2. Lire envoyer_archive dans admin_tools.services ; repérer EmailMessage : expéditeur, destinataire local, sujet
-   "Rapport PYX : 2 alertes", corps expliquant le seuil, puis pièce ZIP en octets.
-3. Suivre l’envoi fourni dans serveur_smtp() avec smtplib.SMTP("127.0.0.1", port, timeout=5).send_message(message).
-4. Enregistrer capture.messages[0] dans message.eml ; relire son sujet et sa pièce jointe, comparer les octets avec le
-   ZIP.
-
-La vérification et la question de transfert sont incluses dans ce temps.
+**Déjà fourni — à conserver :** Création ZIP, envoi local, capture, sauvegarde EML et décodage MIME.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp06 email
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp06 --etape email --rapport sorties/tp06/controle-email.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp06/controle-email.json
+uv run python outils/verifier.py tp06 --etape email
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -122,7 +131,8 @@ du message seule ne prouve pas sa transmission.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 créer l’archive de référence avec archiver fourni
@@ -140,6 +150,14 @@ add_attachment(..., maintype="application", subtype="zip", filename="rapport.zip
 sans diffusion externe.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `messages` | `1` |
+| `objet` | `"Rapport PYX : 2 alertes"` |
+| `piece_jointe` | `"rapport.zip"` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -187,13 +205,35 @@ flowchart TD
 La prévisualisation concerne la configuration ; la préparation du dossier et des preuves précède ce contrôle. Le détail
 des passages se trouve dans `distant.py`.
 
-**Mise en pratique.** Collecter deux cibles Linux, puis déployer une configuration de supervision contrôlée.
+Exemple **fictif** de sortie de `df -Pk /` (vos nombres seront différents) :
 
-**À écrire :** L’extraction du pourcentage disque dans mes_collectes.py.
+```text
+Filesystem 1024-blocks Used Available Capacity Mounted on
+/dev/vda1 100000 42000 58000 42% /
+```
 
-**Fourni :** Collecte Fabric, boucle d’erreurs, connexion SSH, points de contrôle, SFTP et pilote Ansible.
+| Opération sur `sortie` | Résultat dans cet exemple |
+| --- | --- |
+| `splitlines()[-1]` | Dernière ligne, sans l’en-tête |
+| `split()[4]` sur cette ligne | Texte `42%` (les indices commencent à 0) |
+| `rstrip("%")` | Texte `42` |
+| `int(...)` | Entier `42`, à conserver dans `pct` |
 
-**À observer :** La collecte, les erreurs par cible, l’aperçu et l’état relu.
+**Votre objectif :** Une extraction disque, puis des manipulations guidées.
+
+**Fichier à modifier :** `mes_collectes.py`.
+
+**À faire dans l’ordre :**
+
+1. Vérifiez les deux cibles avec `uv run python outils/diagnostic.py --distant`. Si les accès échouent, faites préparer
+   les cibles avant cette étape.
+2. Dans `collecter_une`, remplacez le `None` de `pct` par le résultat de : dernière ligne de `sortie`, découpage en
+   colonnes, colonne d’indice 4, suppression de `%`, conversion avec `int`.
+3. Gardez la boucle par cible, la gestion d’erreur et les commandes fournies. Suivez ensuite les points A et B
+   ci-dessous : ils font partie de l’exercice.
+
+**Déjà fourni — à conserver :** SSH, Fabric, erreurs par cible, SFTP et pilote Ansible. Les deux cibles doivent être
+accessibles.
 
 ### Avant le créneau
 
@@ -208,9 +248,8 @@ compte, clé, hôtes connus, Python cible et dossier dédié. La préparation de
 
 ### A. Collecter avec Fabric - 15 min
 
-1. Dans mes_collectes.py, lire collecter_une et collecter_parc fournis, puis compléter l’extraction du pourcentage
-   disque. Réutiliser connexion fourni ; lire hostname, uname -s et df -Pk /. Conserver alias, date UTC, identité,
-   mesure, statut et erreur.
+1. Après avoir complété `pct`, relire `collecter_une` et `collecter_parc`. Réutiliser connexion fourni ; lire hostname,
+   uname -s et df -Pk /. Conserver alias, date UTC, identité, mesure, statut et erreur.
 2. Préserver les autres cibles après une exception attendue. Le pilote simule un port fermé local ; aucun serveur réel
    n’est arrêté.
 3. Lancer le premier point de contrôle :
@@ -251,17 +290,15 @@ min.
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp06 distant --laboratoire
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp06 --etape distant --laboratoire --rapport sorties/tp06/controle-distant.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp06/controle-distant.json
+uv run python outils/verifier.py tp06 --etape distant --laboratoire
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -294,7 +331,8 @@ deux séquences sont relues séparément, puis rapprochées dans un même essai.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 FONCTION collecter_une(cible, inventaire) :
@@ -322,6 +360,14 @@ supporte check/diff. La préparation préalable concerne uniquement le dossier d
 créerait pas le dossier nécessaire à la copie.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `cibles_attendues` | `true` |
+| `systemes_linux` | `true` |
+| `disques_valides` | `true` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -367,47 +413,62 @@ Import, filtre, export, diagnostic et journal sont fournis. Compléter l’archi
 expliquer pourquoi une étape échouée empêche l’envoi. Consacrer 5 min à la lecture, 5 min aux appels et 5 min au
 contrôle.
 
-**Mise en pratique.** Assembler les alertes et le diagnostic du même essai, puis vérifier le message capturé.
+### Ce qui entre dans le ZIP final
 
-**À écrire :** Les appels d’archive/envoi et le compteur de messages dans depart.py.
+```mermaid
+flowchart LR
+  A["Rapport CSV"] --> B["SQLite : sélectionner les alertes"]
+  B --> C["alertes.csv et alertes.xlsx"]
+  D["diagnostic.json"] --> Z["rapport.zip"]
+  E["collecte.csv si fournie et complète"] --> Z
+  C --> Z
+  Z --> S["SMTP local de capture"]
+  S --> M["message.eml : preuve de réception locale"]
+```
 
-**Fourni :** mes_fonctions.py, import, filtre, exports, diagnostic, journal et SMTP local.
+Le diagnostic est toujours joint ; la collecte dépend du parcours réalisé. Le journal, les clés et l’inventaire SSH
+restent hors du ZIP.
 
-**À observer :** La portée, les membres du ZIP et le message du même essai.
+**Votre objectif :** Assembler l’archive, envoyer puis compter.
 
-1. Relire mes_fonctions.py ; reprendre vos fonctions validées ou conserver celles fournies. La source par défaut est le
-   rapport de référence. --source permet de reprendre votre rapport_complet.csv du TP 04.
-2. Assembler importer_csv, lire_alertes(seuil=2) et exporter. joindre_diagnostic fourni ajoute diagnostic.json : poste,
-   utilisateur, date, volume et portée de la collecte distante.
-3. Archiver les exports et complements ensemble. Si --laboratoire a exécuté la collecte, le fichier distant/collecte.csv
-   du même essai est joint. --collecte permet de joindre une collecte complète précédente. Une collecte explicitement
-   fournie mais absente ou partielle bloque la diffusion.
-4. Envoyer uniquement au SMTP de capture ; enregistrer message.eml. Relire la pièce jointe et le ZIP : alertes.csv,
-   alertes.xlsx, diagnostic.json et, si exécutée, collecte.csv. Aucun inventaire ni clé SSH ne rejoint cette sélection.
-   Tracer import, archive et soumission SMTP dans execution.log avec logging ; garder ce journal hors du ZIP métier. Le
-   journal fourni ferme le fichier et propage une erreur après l’avoir tracée.
-5. Vérifier trois lignes en base et deux alertes sur la référence. Sans collecte SSH, diagnostic.json doit annoncer
-   non_executee ; cela ne valide pas la partie distante. Ne pas joindre les IP sources des logs aux noms des cibles sans
-   une règle de correspondance.
-6. Essayer une source absente : aucun envoi. Décrire la décision à prendre si une seule cible a répondu. Avant de fermer
-   le poste distant, lancer outils/sauvegarder.py et récupérer l’archive sur votre ordinateur.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === INTEGRATION`.
 
-La vérification et la question de transfert sont incluses dans ce temps.
+**À faire dans l’ordre :**
+
+1. Dans le bloc INTEGRATION, remplacez `archive = None` par l’appel
+   `archiver([*fichiers, *complements], dossier / "rapport.zip")`.
+2. Dans le bloc `with serveur_smtp()`, avant `if capture.messages:`, appelez `envoyer_archive(archive, port, sujet=...)`
+   avec une f-string au format `Rapport PYX : {len(alertes)} alertes`.
+3. Dans le bilan, remplacez la valeur `None` de `messages` par `nombre_messages`.
+4. Conservez les autres fonctions fournies et leur ordre. Sans collecte distante, le diagnostic doit indiquer
+   `non_executee` ; cela ne valide pas l’étape SSH.
+
+**Déjà fourni — à conserver :** Import, filtre, exports, diagnostic, journal et capture SMTP ; fonctions réutilisées via
+mes_fonctions.py.
+
+| Fichier produit dans l’étape | Utilité | Dans le ZIP ? |
+| --- | --- | --- |
+| `alertes.csv`, `alertes.xlsx` | Deux alertes sur les données de référence | Oui |
+| `diagnostic.json` | Contexte du poste et portée de la collecte | Oui |
+| `collecte.csv` | Mesures des deux cibles, si collecte complète fournie | Seulement si disponible et validée |
+| `execution.log` | Trace technique du traitement | Non |
+| `message.eml` | Message reçu par le SMTP local | Non |
+
+Les options `--source` et `--collecte` permettent de réutiliser des productions précédentes. Une source absente ou une
+collecte explicitement fournie mais incomplète bloque la diffusion. Le TP utilise par défaut les données de référence.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp06 integration
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp06 --etape integration --rapport sorties/tp06/controle-integration.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp06/controle-integration.json
+uv run python outils/verifier.py tp06 --etape integration
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -434,7 +495,8 @@ l’envoi ; les pièces représentent toutes le même essai.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 dans les contextes de journal et SMTP local fournis :
@@ -456,6 +518,14 @@ compléter. Le diagnostic courant est produit à chaque essai ; la collecte ne d
 ancienne sortie. Le scénario autonome est outils/rapport_final.py.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `importees` | `3` |
+| `alertes` | `2` |
+| `echecs_alertes` | `5` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -488,6 +558,18 @@ bloquer le message final, diagnostiquer la cible puis refaire une collecte compl
 l’hôte est arrêté.
 
 </details>
+
+## Valider votre travail
+
+Depuis la racine du projet, après avoir terminé les étapes :
+
+```sh
+uv run python outils/verifier.py tp06 --complet --laboratoire
+```
+
+Sans cibles SSH disponibles, utilisez la même commande sans `--laboratoire` : les étapes locales seront contrôlées,
+mais l’étape distante restera explicitement non vérifiée. Ne considérez pas ce parcours comme une validation de SSH.
+Avant de quitter le poste distant, lancez `uv run python outils/sauvegarder.py` et récupérez le fichier annoncé.
 
 ## Comprendre la correction
 

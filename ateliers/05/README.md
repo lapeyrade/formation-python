@@ -28,26 +28,40 @@ flowchart LR
 SQLite est un fichier local. Les services Web de test tournent dans le poste ; l’appel public guidé garde une source
 distincte.
 
-## Fichiers et démarrage
+## Où travailler et quoi modifier
 
-Compléter spider.py pour Scrapy. Les cas HTTP contrôlés restent locaux au poste Linux, avec des données simulées ; une
-interrogation publique guidée complète la géolocalisation. SQLite ne demande pas de serveur de base de données.
+**Commencez par la première ligne du tableau ci-dessous.** Les fichiers existent déjà ; ouvrez-les dans l’éditeur.
+Les chemins du tableau sont relatifs à ce dossier de TP. Enregistrez après chaque modification.
 
-```sh
-uv run python ateliers/05/depart.py
-uv run python outils/verifier.py tp05 --complet
+| Étape | Fichier à ouvrir | Travail demandé |
+| --- | --- | --- |
+| [sqlite](#sqlite) | [depart.py](depart.py) | Insérer avec des paramètres et compter depuis la base |
+| [api](#api) | [depart.py](depart.py) | Traiter deux réponses métier |
+| [scrapy](#scrapy) | [spider.py](spider.py) | Extraire trois champs de chaque carte HTML |
+| [archives](#archives) | [depart.py](depart.py) | Comparer le contenu réellement relu |
+
+Les imports, les données de référence, les repères `# ===` et l’enregistrement des résultats sont fournis.
+Ne réécrivez pas tout le script et ne remplacez pas les calculs par les résultats attendus.
+`TODO` signifie « partie à compléter » ; les exemples et extraits du README sont à lire, pas à copier en bloc.
+
+Toutes les commandes se lancent dans un terminal à la racine du projet, où se trouve `pyproject.toml`.
+Si nécessaire, préparez l’environnement avec `uv sync --locked`. Avancez avec le contrôle de chaque étape ;
+le contrôle complet n’est demandé qu’à la fin. Un résultat `À revoir` est normal avant de compléter votre code.
+Le vérificateur relance l’étape et compare vos productions. Les chemins de sorties changent à chaque essai.
+
+## Voir les données avant de coder
+
+Extrait réel de [donnees/rapport_complet.csv](../../donnees/rapport_complet.csv) :
+
+```csv
+ip,nom,site,echecs
+192.0.2.1,srv-paris-web-01,paris,3
+192.0.2.2,srv-paris-web-02,paris,2
+192.0.2.99,inconnu,inconnu,1
 ```
 
-Les commandes se lancent à la racine du projet dans le terminal Linux. Les valeurs « À compléter » sont normales au
-départ. Complétez les repères TODO et conservez les données de référence. Les lectures, les chemins et une partie des
-contrôles sont fournis ; le fichier de départ peut déjà produire des sorties incomplètes. Chaque essai produit un
-dossier dans sorties/ ; le vérificateur relance votre code.
-
-## Travailler avec les amorces
-
-Les repères `TODO` désignent le travail à compléter. Lire aussi les lignes fournies : leur rôle doit pouvoir être
-expliqué. Garder le dernier tiers de chaque créneau pour lancer, lire les résultats et répondre à la question de
-transfert. Les corrigés détaillent les décisions et restent dans des fichiers séparés pour comparer votre version.
+Ce rapport contient **trois lignes**, dont **deux alertes** au seuil de deux échecs. Il est fourni : terminer le TP
+précédent n’est pas nécessaire pour le retrouver.
 
 ## Parcours
 
@@ -64,40 +78,32 @@ Validation, ouverture exclusive, transaction et requêtes de lecture sont fourni
 relier le compteur à la lecture réelle de la base. Lire ensuite importer_csv dans la correction pour comparer la
 fonction réutilisable.
 
-**Mise en pratique.** Conserver un état du rapport et sélectionner les alertes sans refaire l’analyse des logs.
+**Votre objectif :** Insérer avec des paramètres et compter depuis la base.
 
-**À écrire :** L’insertion paramétrée et le compteur de lignes réellement importées.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === SQLITE`.
 
-**Fourni :** Validation CSV, base neuve, schéma, transaction, SELECT, fermeture et refus du doublon.
+**À faire dans l’ordre :**
 
-**À observer :** Les trois lignes en base, le seuil et le refus d’écrasement.
+1. Dans le bloc SQLITE, remplacez la valeur `None` de `requete` par la chaîne
+   `"INSERT INTO incidents VALUES (?, ?, ?, ?)"`.
+2. Gardez `executemany` et ses paramètres fournis : ne construisez pas la requête par concaténation des valeurs.
+3. Dans `resultat`, remplacez la valeur `None` de `importees` par `nombre`, qui vient du `SELECT COUNT(*)`.
 
-[Suivre la même IP jusqu’au message](../../docs/fil-donnee.md) permet de relire le résultat de cette étape dans le
-parcours complet.
-
-1. Lire rapport_complet.csv. Créer une base neuve incidents.sqlite et la table incidents(ip TEXT PRIMARY KEY, nom TEXT,
-   site TEXT, echecs INTEGER).
-2. Insérer avec INSERT INTO incidents VALUES (?, ?, ?, ?) et des tuples de valeurs ; regrouper les écritures dans une
-   transaction.
-3. Vérifier COUNT(*)=3 et SUM(echecs)=6 ; sélectionner echecs >=2 avec un paramètre SQL et ORDER BY ip.
-4. Fermer la connexion dans finally. Refuser un second import dans une base existante, sans en changer les octets.
-
-La vérification et la question de transfert sont incluses dans ce temps.
+**Déjà fourni — à conserver :** Contrôle CSV, base neuve, table, transaction, sélection des alertes, fermeture et refus
+de réutilisation.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp05 sqlite
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp05 --etape sqlite --rapport sorties/tp05/controle-sqlite.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp05/controle-sqlite.json
+uv run python outils/verifier.py tp05 --etape sqlite
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -124,7 +130,8 @@ et la fermeture de la connexion sont deux responsabilités distinctes.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 lire et valider les lignes du CSV
@@ -144,6 +151,14 @@ with connexion gère la transaction, pas sa fermeture. Le mode xb réserve un fi
 dans admin_tools.rapports.importer_csv.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `importees` | `3` |
+| `alertes` | `2` |
+| `echecs_alertes` | `5` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -177,44 +192,57 @@ comparer à période identique avant d’annoncer une amélioration.
 
 ## API et géolocalisation — 30 min
 
-**Mise en pratique.** Enrichir une IP d’incident en distinguant réponse HTTP, contenu et résultat métier.
+### Distinguer HTTP et résultat métier
 
-**À écrire :** Les appels et statuts demandés dans depart.py.
+```mermaid
+flowchart TD
+  A["Requête avec délai"] --> B{"HTTP et JSON valides ?"}
+  B -->|Non| E["erreur"]
+  B -->|Oui| C{"status dans le JSON"}
+  C -->|fail| D["indisponible"]
+  C -->|success avec country| F["localisee"]
+  C -->|autre| E
+```
 
-**Fourni :** Le serveur HTTP local et le client public guidé.
+Un HTTP réussi ne garantit pas une localisation disponible. Les données de ce serveur local sont fictives.
 
-**À observer :** Statut HTTP, contenu, champs et origine des données.
+**Votre objectif :** Traiter deux réponses métier.
 
-1. Exécuter le client et le serveur fourni dans le terminal du poste Linux. Ici, 127.0.0.1 désigne ce poste distant ;
-   depuis votre ordinateur personnel, la même adresse désigne un autre système.
-2. Dans le contexte serveur_http fourni, appeler /geo avec params={"ip": "192.0.2.1"} et timeout=3.
-3. Vérifier raise_for_status avant json(), puis normaliser ip, pays, ville, statut et source. La source vaut
-   simulation_locale.
-4. Tester /absent, /invalide et /erreur ; distinguer donnée indisponible, JSON invalide et erreur HTTP.
-5. Renseigner les quatre statuts attendus. Refaire l’appel avec une IP du rapport : changer l’entrée ne change pas le
-   caractère fictif du résultat.
-6. Dans les cinq dernières minutes du même créneau, lancer `uv run python outils/geolocalisation_directe.py 1.1.1.1`.
-   Lire le client fourni : HTTPS, délai, statut, champs, IP retournée. Comparer source, date, pays et ville avec la
-   simulation. Le pays et la ville ne sont pas des valeurs attendues fixes. N’envoyer aucune IP privée ni les adresses
-   de documentation du parc au service public. Si la requête échoue, son statut reste erreur/indisponible : le résultat
-   fictif ne remplace pas une localisation réelle.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === API`.
 
-La vérification et la question de transfert sont incluses dans ce temps.
+**À faire dans l’ordre :**
+
+1. Dans `localiser`, dans la branche `status == "fail"`, remplacez `pass` par l’affectation de `"indisponible"` à
+   `sortie["statut"]`.
+2. Dans la branche de succès, remplacez `pass` par une mise à jour de `sortie` : `pays` vient de `contenu["country"]`,
+   `ville` de `contenu.get("city")`, et `statut` vaut `"localisee"`.
+3. Gardez l’appel `requests.get`, le délai, `raise_for_status`, le décodage JSON et le `except` fournis. Le pilote
+   appelle déjà les quatre routes.
+
+**Déjà fourni — à conserver :** Serveur de simulation, appels HTTP, erreurs de transport/JSON et quatre cas de contrôle.
+
+**Essai public guidé (les cinq dernières minutes) :**
+
+```sh
+uv run python outils/geolocalisation_directe.py 1.1.1.1
+```
+
+Cet appel exige Internet. Comparez la source, la date et les champs avec la simulation ; pays et ville peuvent varier.
+N’utilisez que l’IP publique indiquée pour cet essai. Une erreur reste une erreur : le résultat fictif ne la remplace
+pas.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp05 api
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp05 --etape api --rapport sorties/tp05/controle-api.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp05/controle-api.json
+uv run python outils/verifier.py tp05 --etape api
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -241,7 +269,8 @@ reste une information du résultat, y compris en cas d’échec.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 pour chaque route locale, initialiser un résultat au statut erreur
@@ -264,6 +293,14 @@ requête par essai ; un échec externe conserve un statut non réussi. Voir la
 publique guidée 5 min.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `statuts` | `["localisee", "indisponible", "erreur", "erreur"]` |
+| `source` | `"simulation_locale"` |
+| `pays_simule` | `"Pays fictif"` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -299,38 +336,53 @@ Non : localisation approximative de l’accès réseau, proxy ou VPN possibles ;
 
 ## Extraire une page avec Scrapy — 25 min
 
-**Mise en pratique.** Lire une page locale de statut et identifier les services à examiner.
+Extrait réel de [machines.html](../../donnees/machines.html), remis en lignes pour la lecture :
 
-**À écrire :** Les extractions CSS dans le spider du TP.
+```html
+<article class="machine">
+<h2>API</h2>
+<span class="ip">192.0.2.2</span>
+<span class="site">paris</span>
+<span class="etat">DEGRADE</span>
+<p class="message">Latence élevée</p>
+</article>
+```
 
-**Fourni :** Le serveur local, le pilote et les cartes HTML.
+| Sélecteur relatif à une carte | Texte extrait sur cette carte |
+| --- | --- |
+| `.etat::text` | `DEGRADE` |
+| `.message::text` | `Latence élevée` |
+| `.site::text` | `paris` |
 
-**À observer :** Les services dégradés ou inconnus et les champs absents.
+La carte VPN du fichier n’a pas de balise `message` : c’est le cas qui doit produire `non renseigné`.
 
-1. Ouvrir donnees/machines.html dans l’éditeur du poste Linux : trois cartes article.machine, état OK, DEGRADE ou
-   INCONNU. Le client Scrapy et son serveur tournent dans ce même poste.
-2. Dans spider.py, compléter site, etat et message avec des sélecteurs relatifs à carte. Pour le message absent,
-   utiliser "non renseigné".
-3. Lancer depart.py ; le pilote fournit le serveur, exécute le spider et exporte machines.json.
-4. Lire les enregistrements : DNS disponible, API dégradée, VPN inconnu. Le bilan a_examiner doit contenir API et VPN.
-5. Expliquer pourquoi un état inconnu doit rester visible et pourquoi un sélecteur peut casser si le HTML change.
+**Votre objectif :** Extraire trois champs de chaque carte HTML.
 
-La vérification et la question de transfert sont incluses dans ce temps.
+**Fichier à modifier :** `spider.py`.
+
+**À faire dans l’ordre :**
+
+1. Dans `parse`, remplacez le `None` de `etat` par `carte.css(".etat::text").get()` ; conservez les textes du HTML.
+2. Remplacez le `None` de `message` par une extraction de `.message::text` avec la valeur par défaut `"non renseigné"`
+   si la balise manque.
+3. Remplacez le `None` de `site` par `carte.css(".site::text").get()`.
+4. Utilisez toujours `carte`, pas `response`, pour lire les champs de la machine courante. Le pilote démarre le serveur
+   et le spider pour vous.
+
+**Déjà fourni — à conserver :** Boucle sur les cartes, nom/IP, démarrage et export JSON.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp05 scrapy
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp05 --etape scrapy --rapport sorties/tp05/controle-scrapy.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp05/controle-scrapy.json
+uv run python outils/verifier.py tp05 --etape scrapy
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -357,7 +409,8 @@ inconnu en état sain.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 POUR chaque carte déjà parcourue par le spider fourni :
@@ -376,6 +429,14 @@ Exemples : carte.css(".etat::text").get() ; get() or "non renseigné". La boucle
 trois extractions sont à adapter.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `nombre` | `3` |
+| `sites` | `["paris", "paris", "paris"]` |
+| `a_examiner` | `["API", "VPN"]` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -417,37 +478,30 @@ Non. Elle ne renseigne pas l’état ; conserver les deux informations séparém
 La création et la relecture sont fournies. Compléter les deux comparaisons, puis suivre la fonction archiver pour
 identifier format, mode et noms des membres.
 
-**Mise en pratique.** Préparer un dossier de transfert contenant uniquement les rapports prévus.
+**Votre objectif :** Comparer le contenu réellement relu.
 
-**À écrire :** Les deux comparaisons de membres et d’octets dans depart.py.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === ARCHIVES`.
 
-**Fourni :** Les appels de création et de relecture ; archiver montre la référence.
+**À faire dans l’ordre :**
 
-**À observer :** Les membres et leurs octets après fermeture.
+1. Dans le bloc ARCHIVES, remplacez la valeur `None` de `memes_membres` par la comparaison `noms_zip == noms_tar`.
+2. Remplacez la valeur `None` de `octets_identiques` par `identiques`, déjà calculé lors de la relecture du ZIP.
+3. Gardez la création et la lecture des deux archives. Ouvrez la fonction `archiver` pour expliquer les noms stockés.
 
-1. Contrat : archiver(fichiers, destination) écrit uniquement les fichiers sélectionnés avec leur nom simple ; la source
-   doit rester identique.
-2. Produire rapport.zip et rapport.tar.gz à partir des deux exports de référence, sans y inclure le projet entier. Les
-   deux archives doivent avoir les mêmes deux membres et leurs octets exacts.
-3. Contrôler les membres et leur contenu après fermeture, puis compléter les critères. Décrire le risque d’une archive
-   extraite sans contrôle des chemins.
-
-La vérification et la question de transfert sont incluses dans ce temps.
+**Déjà fourni — à conserver :** Sélection des deux rapports, création ZIP/TAR.GZ et relecture réelle des octets.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp05 archives
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp05 --etape archives --rapport sorties/tp05/controle-archives.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp05/controle-archives.json
+uv run python outils/verifier.py tp05 --etape archives
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -474,7 +528,8 @@ compression ne garantit pas une réduction de taille.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 sélectionner seulement les deux rapports du contrat
@@ -494,6 +549,14 @@ d’archive extérieure pour cet exercice. Répartition : conception 3 min, réa
 Choisir ZipFile/TarFile et with ; les détails d’appel restent dans les exemples de cours.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `membres` | `["rapport_complet.csv", "rapport_complet.xlsx"]` |
+| `memes_membres` | `true` |
+| `octets_identiques` | `true` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -522,6 +585,14 @@ leur cohérence est contrôlée.
 Non : le conteneur et la compression sont deux opérations distinctes.
 
 </details>
+
+## Valider votre travail
+
+Depuis la racine du projet, après avoir terminé les étapes :
+
+```sh
+uv run python outils/verifier.py tp05 --complet
+```
 
 ## Comprendre la correction
 

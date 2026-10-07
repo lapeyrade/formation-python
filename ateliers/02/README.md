@@ -27,26 +27,49 @@ flowchart TD
 
 Les blocs sur la mutabilité et les fichiers permettent de fiabiliser ces règles avant l’import complet.
 
-## Fichiers et démarrage
+## Où travailler et quoi modifier
 
-Pour les fonctions, compléter depart.py. Pour les modules, compléter inventaire_module.py ; le pilote prépare un projet
-uv indépendant et utilise la bibliothèque fournie hors ligne.
+**Commencez par la première ligne du tableau ci-dessous.** Les fichiers existent déjà ; ouvrez-les dans l’éditeur.
+Les chemins du tableau sont relatifs à ce dossier de TP. Enregistrez après chaque modification.
 
-```sh
-uv run python ateliers/02/depart.py
-uv run python outils/verifier.py tp02 --complet
+| Étape | Fichier à ouvrir | Travail demandé |
+| --- | --- | --- |
+| [fonctions](#fonctions) | [depart.py](depart.py) | Deux retours de fonctions |
+| [mutabilite](#mutabilite) | [depart.py](depart.py) | Deux partages de liste à corriger |
+| [fichiers](#fichiers) | [depart.py](depart.py) et [debogage.py](debogage.py) | Une copie binaire et trois traitements d’erreur |
+| [inventaire](#inventaire) | [depart.py](depart.py) | Valider une ligne, puis traiter un fichier absent |
+| [uv](#uv) | [inventaire_module.py](inventaire_module.py) | Une valeur de retour et un projet d’essai |
+
+Les imports, les données de référence, les repères `# ===` et l’enregistrement des résultats sont fournis.
+Ne réécrivez pas tout le script et ne remplacez pas les calculs par les résultats attendus.
+`TODO` signifie « partie à compléter » ; les exemples et extraits du README sont à lire, pas à copier en bloc.
+
+Toutes les commandes se lancent dans un terminal à la racine du projet, où se trouve `pyproject.toml`.
+Si nécessaire, préparez l’environnement avec `uv sync --locked`. Avancez avec le contrôle de chaque étape ;
+le contrôle complet n’est demandé qu’à la fin. Un résultat `À revoir` est normal avant de compléter votre code.
+Le vérificateur relance l’étape et compare vos productions. Les chemins de sorties changent à chaque essai.
+
+## Voir les données avant de coder
+
+Extrait réel de [donnees/parc_source.csv](../../donnees/parc_source.csv) :
+
+```csv
+nom;ip;actif;charge
+srv-paris-web-01;192.0.2.1;oui;20
+srv-paris-web-02;192.0.2.2;oui;65
+srv-paris-web-03;192.0.2.3;non;90
+srv-paris-web-04;192.0.2.4;oui;10
 ```
 
-Les commandes se lancent à la racine du projet dans le terminal Linux. Les valeurs « À compléter » sont normales au
-départ. Complétez les repères TODO et conservez les données de référence. Les lectures, les chemins et une partie des
-contrôles sont fournis ; le fichier de départ peut déjà produire des sorties incomplètes. Chaque essai produit un
-dossier dans sorties/ ; le vérificateur relance votre code.
+Extrait réel de [donnees/message.txt](../../donnees/message.txt) :
 
-## Travailler avec les amorces
+```text
+Rapport de sécurité
+Trois machines vérifiées.
+```
 
-Les repères `TODO` désignent le travail à compléter. Lire aussi les lignes fournies : leur rôle doit pouvoir être
-expliqué. Garder le dernier tiers de chaque créneau pour lancer, lire les résultats et répondre à la question de
-transfert. Les corrigés détaillent les décisions et restent dans des fichiers séparés pour comparer votre version.
+Le séparateur du CSV est `;`. Les nombres et « oui/non » sont lus comme du texte avant conversion. Les lignes invalides
+doivent être rejetées sans perdre les valides.
 
 ## Parcours
 
@@ -60,36 +83,31 @@ transfert. Les corrigés détaillent les décisions et restent dans des fichiers
 
 ## Fonctions réutilisables — 20 min
 
-**Mise en pratique.** Rendre les règles de nommage et de masque réutilisables sans afficher au milieu du traitement.
+**Votre objectif :** Deux retours de fonctions.
 
-**À écrire :** extraire_site et masque dans depart.py.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === FONCTIONS`.
 
-**Fourni :** Les cas d’appel et les données du TP01.
+**À faire dans l’ordre :**
 
-**À observer :** La valeur renvoyée et les entrées inchangées.
+1. Dans `extraire_site`, remplacez `return None` par le retour du deuxième élément de `morceaux` (indice 1). Retirez le
+   `print` d’observation.
+2. Dans `masque`, remplacez `return None` par le retour des chaînes de `octets` réunies avec `".".join(...)`. Retirez le
+   `print` d’observation.
 
-1. Compléter extraire_site(nom) avec une valeur de retour ; tester les noms Paris et Lyon.
-2. Reprendre le calcul précédent dans masque(prefixe). À cette étape, les appels portent sur les entiers valides 24 et
-   32.
-3. Appeler les deux fonctions depuis le script et construire le bilan. Garder la présentation hors des fonctions.
-4. Décrire oralement la réaction attendue à un nom mal formé ; la validation complète arrive dans l’import.
-
-La vérification et la question de transfert sont incluses dans ce temps.
+**Déjà fourni — à conserver :** Découpage du nom, calcul des octets et appels de test.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp02 fonctions
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp02 --etape fonctions --rapport sorties/tp02/controle-fonctions.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp02/controle-fonctions.json
+uv run python outils/verifier.py tp02 --etape fonctions
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -116,7 +134,8 @@ valeur sans dépendre d’un affichage ou d’un fichier.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 FONCTION extraire_site(nom) :
@@ -134,6 +153,13 @@ Repères du code fourni :
 return transmet la donnée au client ; print ne constitue pas un résultat réutilisable.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `sites` | `["paris", "lyon"]` |
+| `masques` | `["255.255.255.0", "255.255.255.255"]` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -169,35 +195,44 @@ La règle de nommage doit aussi fonctionner sur une valeur venant d’un CSV, d�
 
 ## Mutabilité et effets de bord — 10 min
 
-**Mise en pratique.** Éviter qu’ajouter un service à une machine modifie la configuration d’une autre.
+### Deux noms ou deux listes ?
 
-**À écrire :** La copie et le paramètre par défaut à corriger.
+```mermaid
+flowchart LR
+  A["original"] --> L["Liste : ssh"]
+  B["copie = original"] --> L
+  C["original.copy()"] --> M["Nouvelle liste : ssh"]
+  M --> N["append : ssh, https"]
+```
 
-**Fourni :** Deux cas montrant le partage involontaire.
+Avec une affectation simple, les deux noms désignent la même liste. La copie sépare les deux listes pour cet exemple de
+chaînes.
 
-**À observer :** Des collections indépendantes à chaque appel.
+**Votre objectif :** Deux partages de liste à corriger.
 
-1. Observer l’alias copie = original ; le remplacer par une copie indépendante avant append("https").
-2. Corriger le paramètre mutable de ajouter : None par défaut et création d’une liste dans la fonction.
-3. Appeler ajouter("a") puis ajouter("b") et vérifier deux résultats indépendants ; expliquer le risque pour des listes
-   de services.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === MUTABILITE`.
 
-La vérification et la question de transfert sont incluses dans ce temps.
+**À faire dans l’ordre :**
+
+1. Remplacez `copie = original` par une copie avec `original.copy()` ; conservez ensuite le `append` fourni.
+2. Dans la définition de `ajouter`, remplacez le défaut `elements=[]` par `elements=None`.
+3. Au début de cette fonction, ajoutez `if elements is None:` puis `elements = []` dans son bloc. Gardez `append` et
+   `return` après ce bloc.
+
+**Déjà fourni — à conserver :** Les appels successifs qui révèlent les effets de bord.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp02 mutabilite
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp02 --etape mutabilite --rapport sorties/tp02/controle-mutabilite.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp02/controle-mutabilite.json
+uv run python outils/verifier.py tp02 --etape mutabilite
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -224,7 +259,8 @@ collection propre à un nouvel appel.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 copie <- nouvelle liste construite depuis original
@@ -242,6 +278,14 @@ Repères du code fourni :
 Une copie superficielle suffit pour cette liste de chaînes. Une liste imbriquée resterait partagée : ne pas généraliser.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `original` | `["ssh"]` |
+| `copie` | `["ssh", "https"]` |
+| `premier` | `["a"]` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -282,13 +326,22 @@ La valeur par défaut est créée à la définition de la fonction, pas à chaqu
 
 ## Fichiers et exceptions — 20 min
 
-**Mise en pratique.** Copier une note d’intervention et une pièce binaire sans altérer leur contenu.
+**Votre objectif :** Une copie binaire et trois traitements d’erreur.
 
-**À écrire :** Les lectures, copies et traitements d’erreurs dans depart.py.
+**Fichier à modifier :** `depart.py et debogage.py`.
 
-**Fourni :** Les deux fichiers sources et les cas de debogage.py.
+**À faire dans l’ordre :**
 
-**À observer :** Les octets, les erreurs attendues et la fermeture des fichiers.
+1. Dans le bloc FICHIERS, après la lecture de `octets`, ouvrez `dossier / "copie.bin"` en mode `"wb"` avec `with`, puis
+   écrivez `octets` avec `write`.
+2. Dans `except FileNotFoundError`, remplacez `pass` par un ajout de `"fichier absent"` à la liste `erreurs`.
+3. Dans `except ValueError`, remplacez `pass` par un ajout de `"conversion impossible"` à cette même liste.
+4. Dans `finally`, remplacez `pass` par `passage_finally = True`. Ne provoquez pas d’autres erreurs : les deux cas sont
+   déjà écrits.
+5. Réalisez aussi les deux petites corrections de `debogage.py` décrites ci-dessous.
+
+**Déjà fourni — à conserver :** Lecture et copie du texte, lecture binaire, exceptions provoquées et comparaison des
+copies.
 
 ### Lire et corriger une erreur - 5 min dans les 20 min
 
@@ -307,31 +360,18 @@ référence si nécessaire.
 Ces erreurs sont volontairement capturées et affichées par le pilote ; elles ne sont pas des pannes du kit. Réserver
 cinq minutes à cette lecture/correction, dix aux fichiers ci-dessous et cinq au contrôle et à l’explication.
 
-### Copier et traiter les erreurs prévues - 15 min
-
-1. Lire message.txt en UTF-8 et écrire copie.txt dans dossier. Vérifier la présence du mot sécurité.
-2. Lire exemple.bin en binaire et écrire copie.bin ; comparer les octets, pas seulement la taille.
-3. Provoquer une source absente et une conversion invalide. Intercepter FileNotFoundError puis ValueError séparément.
-4. Marquer le passage dans finally pour la conversion. Utiliser with pour fermer les fichiers.
-5. Comparer le chemin du fichier source, le dossier courant et le dossier de sortie. Un refus de lecture est une erreur
-   d’accès, distincte d’une donnée mal formée ; travailler dans votre dossier utilisateur.
-
-La vérification et la question de transfert sont incluses dans ce temps.
-
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp02 fichiers
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp02 --etape fichiers --rapport sorties/tp02/controle-fichiers.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp02/controle-fichiers.json
+uv run python outils/verifier.py tp02 --etape fichiers
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -358,7 +398,8 @@ doivent être traitées séparément des erreurs de programmation.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 dans les cas de débogage, examiner type de charge et nom du fichier
@@ -378,6 +419,14 @@ Repères du code fourni :
 Les 256 octets du fichier de référence ne sont pas du texte. Garder les chemins sous le dossier de sortie fourni.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `accent` | `true` |
+| `octets` | `256` |
+| `copie_identique` | `true` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -410,46 +459,50 @@ traitement.
 
 </details>
 
+Deux dernières lignes réelles de [parc_source.csv](../../donnees/parc_source.csv), à examiner sans les modifier :
+
+```csv
+ligne;incomplete
+srv-test;192.0.2.9;oui;inconnue
+```
+
+| Ligne du fichier (en-tête compris) | Problème | Traitement attendu |
+| --- | --- | --- |
+| 10 | Deux champs au lieu de quatre | Enregistrer un rejet, poursuivre l’import. |
+| 11 | Charge non convertible en entier | Enregistrer un rejet, poursuivre l’import. |
+
 <a id="inventaire"></a>
 
 ## Inventaire fiable — 35 min
 
-**Mise en pratique.** Recevoir un export de parc avec des anomalies et produire une liste exploitable pour
-l’intervention.
+**Votre objectif :** Valider une ligne, puis traiter un fichier absent.
 
-**À écrire :** La validation, les rejets et les exports dans depart.py.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === INVENTAIRE`.
 
-**Fourni :** importer, le lecteur CSV, les rejets, les exports et les contrôles IP/actif. Compléter valider_ligne et le
-cas de source absente.
+**À faire dans l’ordre :**
 
-**À observer :** Les lignes acceptées et la cause de chaque rejet.
+1. Dans `valider_ligne`, après la conversion de `charge`, ajoutez un test qui lève `ValueError` si la charge est hors de
+   0 à 100 inclus.
+2. Remplacez `return None` par un dictionnaire contenant `nom` nettoyé avec `strip().lower()`, `ip`, `actif` converti
+   par comparaison à `"oui"`, et `charge` entière. Retirez le `print` d’observation.
+3. Après les exports, initialisez `absence_signalee` à `False`. Appelez `importer(dossier / "absent.txt")` dans un
+   `try` ; dans `except FileNotFoundError`, passez `absence_signalee` à `True`.
 
-1. Lire importer et valider_ligne dans depart.py. Le lecteur et les exports sont fournis. Ouvrir donnees/parc_source.csv
-   avec encoding="utf-8-sig", newline="" et csv.DictReader(delimiter=";"). Vérifier les colonnes nom, ip, actif, charge.
-2. Pour chaque ligne, contrôler les champs manquants, valider ip avec ipaddress.ip_address, décoder oui/non et convertir
-   charge en entier de 0 à 100.
-3. Garder les machines valides ; en cas de ValueError, conserver lecteur.line_num et le motif dans rejets. L’ouverture
-   reste hors du try par ligne.
-4. Écrire rapport.txt avec un nom par ligne et rejets.json avec json.dumps(..., ensure_ascii=False, indent=2). Vérifier
-   huit acceptations et deux rejets aux lignes physiques 10 et 11.
-5. Appeler votre importeur avec un chemin absent et constater FileNotFoundError sans produire de rapport de réussite.
-
-La vérification et la question de transfert sont incluses dans ce temps.
+**Déjà fourni — à conserver :** Lecture CSV, validation IP et état, capture des lignes rejetées, écriture du rapport et
+des rejets.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp02 inventaire
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp02 --etape inventaire --rapport sorties/tp02/controle-inventaire.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp02/controle-inventaire.json
+uv run python outils/verifier.py tp02 --etape inventaire
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -476,7 +529,8 @@ source inaccessible empêche de commencer l’import.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 ouvrir la source avec l’encodage et le séparateur du contrat
@@ -496,6 +550,14 @@ La référence lire_inventaire dans admin_tools.metier montre la séparation lec
 séparateurs d’un CSV sont gérés par DictReader, pas par split.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `acceptes` | `8` |
+| `rejetes` | `2` |
+| `lignes_rejetees` | `[10, 11]` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -532,50 +594,51 @@ inaccessible. Conserver le rejet et demander un export corrigé ; ne pas invente
 
 ## Modules et projet uv — 15 min
 
-**Mise en pratique.** Isoler un utilitaire de parc et installer une petite bibliothèque sans accès Internet pendant
-l’exercice.
+**Votre objectif :** Une valeur de retour et un projet d’essai.
 
-**À écrire :** La fonction dans inventaire_module.py ; lancer la commande uv demandée.
+**Fichier à modifier :** `inventaire_module.py`.
 
-**Fourni :** Le pilote projet_uv et le wheel local.
+**À faire dans l’ordre :**
 
-**À observer :** L’import sans effet de bord et l’installation dans le bon projet.
+1. Dans `etiquette`, remplacez `return None` par le retour d’une f-string contenant `Hôte`, un espace, puis `nom`.
+2. Conservez le bloc `if __name__ == "__main__":` : il protège déjà la démonstration lors de l’import.
+3. Lancez les commandes du projet d’essai ci-dessous ; aucun changement n’est demandé dans le bloc UV de `depart.py`.
 
-1. Compléter inventaire_module.py : etiquette(nom) renvoie "Hôte " suivi du nom. Protéger l’affichage de démonstration
-   avec `__main__`.
-2. Exécuter le module puis l’importer : l’import ne doit pas déclencher son affichage de démonstration.
-3. Dans un nouveau dossier d’essai (à créer une seule fois), installer vous-même la bibliothèque fournie. Depuis la
-   racine du kit :
+**Déjà fourni — à conserver :** Protection du point d’entrée, bibliothèque locale et pilote d’installation.
 
-   ```sh
-   env -u VIRTUAL_ENV uv init --bare --vcs none --no-workspace --python 3.13.13 sorties/essai-lib
-   env -u VIRTUAL_ENV uv add --project sorties/essai-lib --offline donnees/wheels/pyx_parc-1.0.0-py3-none-any.whl
-   env -u VIRTUAL_ENV uv run --project sorties/essai-lib --offline python -c "import pyx_parc; print(pyx_parc.normaliser_nom(' SRV-WEB '))"
-   ```
+**Distinguer exécution et import :**
 
-   `env -u VIRTUAL_ENV` évite d’imposer l’environnement du cours au projet d’essai, même dans un terminal activé par VS
-   Code. Vérifier `srv-web`. uv init crée le projet ; uv add déclare et installe le wheel ; uv run utilise cet
-   environnement. Relire projet_uv dans admin_tools.pilotes : le contrôle refait la même installation dans un dossier
-   neuf.
-4. Exécuter l’étape et inspecter projet_uv/pyproject.toml, uv.lock et .venv. La bibliothèque installée normalise "
-   SRV-WEB " en "srv-web".
+```sh
+uv run python ateliers/02/inventaire_module.py
+uv run python -c "import sys; sys.path.insert(0, 'ateliers/02'); import inventaire_module"
+```
 
-La manipulation manuelle, la vérification et la question de transfert sont incluses dans les quinze minutes.
+La première commande doit afficher `Hôte srv-web`. La seconde ne doit rien afficher : elle importe le module
+sans exécuter la démonstration protégée par `__main__`.
+
+**Manipulation guidée :** ces commandes s’exécutent dans un terminal Linux ou macOS. Créez ce dossier une seule fois ;
+s’il existe déjà, choisissez un autre nom partout dans les trois commandes.
+
+```sh
+env -u VIRTUAL_ENV uv init --bare --vcs none --no-workspace --python 3.13.13 sorties/essai-lib
+env -u VIRTUAL_ENV uv add --project sorties/essai-lib --offline donnees/wheels/pyx_parc-1.0.0-py3-none-any.whl
+env -u VIRTUAL_ENV uv run --project sorties/essai-lib --offline python -c "import pyx_parc; print(pyx_parc.normaliser_nom(' SRV-WEB '))"
+```
+
+Résultat attendu : `srv-web`. `uv init` crée le projet, `uv add` installe la bibliothèque fournie, `uv run` l’utilise.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp02 uv
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp02 --etape uv --rapport sorties/tp02/controle-uv.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp02/controle-uv.json
+uv run python outils/verifier.py tp02 --etape uv
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -602,7 +665,8 @@ séparé pour garder l’environnement du cours reproductible.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 dans inventaire_module.py, compléter la fonction demandée
@@ -620,6 +684,14 @@ Le pilote prépare l’essai dans une sortie neuve. Les commandes uv init, uv ad
 d’un wheel n’est pas demandée.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `projet` | `true` |
+| `verrouillage` | `true` |
+| `environnement` | `true` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -646,6 +718,14 @@ leur cohérence est contrôlée.
 Il peut masquer la bibliothèque requests lors de la résolution des imports.
 
 </details>
+
+## Valider votre travail
+
+Depuis la racine du projet, après avoir terminé les étapes :
+
+```sh
+uv run python outils/verifier.py tp02 --complet
+```
 
 ## Comprendre la correction
 

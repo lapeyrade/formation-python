@@ -26,26 +26,39 @@ flowchart TD
 
 Une adresse candidate est issue du plan fourni ; elle n’est pas une preuve de disponibilité sur le réseau.
 
-## Fichiers et démarrage
+## Où travailler et quoi modifier
 
-Compléter ma_boite/reseau.py et ma_boite/modeles.py, puis lire les deux clients generer.py et resumer.py. La partie
-diagnostic est dans depart.py. Ajouter les imports nécessaires dans le préambule commun.
+**Commencez par la première ligne du tableau ci-dessous.** Les fichiers existent déjà ; ouvrez-les dans l’éditeur.
+Les chemins du tableau sont relatifs à ce dossier de TP. Enregistrez après chaque modification.
 
-```sh
-uv run python ateliers/03/depart.py
-uv run python outils/verifier.py tp03 --complet
+| Étape | Fichier à ouvrir | Travail demandé |
+| --- | --- | --- |
+| [generateur](#generateur) | [ma_boite/reseau.py](ma_boite/reseau.py) | Exclure les réservations puis produire une adresse |
+| [classe](#classe) | [ma_boite/modeles.py](ma_boite/modeles.py) | Compléter uniquement la méthode resume |
+| [bibliotheque](#bibliotheque) | [generer.py](generer.py) et [resumer.py](resumer.py) | Réutiliser votre package, sans nouveau code |
+| [diagnostic](#diagnostic) | [depart.py](depart.py) | Rédiger trois interprétations et leur contrôle |
+
+Les imports, les données de référence, les repères `# ===` et l’enregistrement des résultats sont fournis.
+Ne réécrivez pas tout le script et ne remplacez pas les calculs par les résultats attendus.
+`TODO` signifie « partie à compléter » ; les exemples et extraits du README sont à lire, pas à copier en bloc.
+
+Toutes les commandes se lancent dans un terminal à la racine du projet, où se trouve `pyproject.toml`.
+Si nécessaire, préparez l’environnement avec `uv sync --locked`. Avancez avec le contrôle de chaque étape ;
+le contrôle complet n’est demandé qu’à la fin. Un résultat `À revoir` est normal avant de compléter votre code.
+Le vérificateur relance l’étape et compare vos productions. Les chemins de sorties changent à chaque essai.
+
+**Dépendance :** l’étape `bibliotheque` réutilise votre générateur et votre classe ; terminez ces deux étapes avant.
+
+## Voir les données avant de coder
+
+Extrait réel de [ateliers/03/generer.py](../../ateliers/03/generer.py) :
+
+```python
+from ma_boite.reseau import generer_ips
+
+for ip in generer_ips("192.0.2.0/29"):
+    print(ip)
 ```
-
-Les commandes se lancent à la racine du projet dans le terminal Linux. Les valeurs « À compléter » sont normales au
-départ. Complétez les repères TODO et conservez les données de référence. Les lectures, les chemins et une partie des
-contrôles sont fournis ; le fichier de départ peut déjà produire des sorties incomplètes. Chaque essai produit un
-dossier dans sorties/ ; le vérificateur relance votre code.
-
-## Travailler avec les amorces
-
-Les repères `TODO` désignent le travail à compléter. Lire aussi les lignes fournies : leur rôle doit pouvoir être
-expliqué. Garder le dernier tiers de chaque créneau pour lancer, lire les résultats et répondre à la question de
-transfert. Les corrigés détaillent les décisions et restent dans des fichiers séparés pour comparer votre version.
 
 ## Parcours
 
@@ -62,40 +75,41 @@ La validation des entrées est fournie. Compléter les deux TODO du parcours, pu
 et 3 et l’épuisement du générateur. Répartir le créneau entre lecture (5 min), modifications et essais (15 min),
 contrôle et explication (10 min).
 
-**Mise en pratique.** Proposer des adresses candidates en excluant les réservations du plan réseau.
+### Un générateur se consomme
 
-**À écrire :** Les deux TODO de generer_ips : exclure les réservations et produire une candidate avec yield.
+```mermaid
+flowchart LR
+  A["generer_ips : nouveau générateur g"] --> B["list(g) : six adresses"]
+  B --> C["list(g) à nouveau : liste vide"]
+  D["Nouvel appel à generer_ips"] --> E["Nouveau parcours : six adresses"]
+```
 
-**Fourni :** Validation, parcours hosts, compteur, limite et appels du pilote.
+Le second parcours du même objet est vide ; un nouvel appel crée un générateur indépendant.
 
-**À observer :** La consommation du générateur et les adresses candidates.
+**Votre objectif :** Exclure les réservations puis produire une adresse.
 
-1. Compléter ma_boite/reseau.py : generer_ips(reseau, reservees=(), limite=None). Utiliser ip_network puis hosts,
-   convertir les réservations en objets IP.
-2. Lire les contrôles fournis et vérifier qu’ils refusent une limite négative/non entière et une réservation hors
-   réseau. Avec limite=0, ne rien produire. Limiter le TP à IPv4.
-3. Ignorer les adresses réservées, yield str(adresse), puis arrêter après le nombre demandé ; si le réseau est épuisé,
-   terminer normalement.
-4. Sur 192.0.2.0/29 avec .1 et .3 réservées, demander trois candidates : .2, .4, .5. Comparer avec le parcours complet
-   de six hôtes.
-5. Consommer deux fois le même générateur, puis en créer un nouveau : longueurs 6, 0, 6.
+**Fichier à modifier :** `ma_boite/reseau.py`.
 
-La vérification et la question de transfert sont incluses dans ce temps.
+**À faire dans l’ordre :**
+
+1. Dans la boucle `for adresse in net.hosts():`, ajoutez `if adresse in exclusions:` puis `continue` dans son bloc.
+2. Remplacez `yield from ()` par `yield str(adresse)`, au même niveau que le `if` (dans la boucle).
+3. Conservez le compteur et la limite après `yield`. Ils doivent compter les adresses produites, pas les réservations.
+
+**Déjà fourni — à conserver :** Validation des paramètres, parcours des hôtes, limite et appels du bloc GENERATEUR.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp03 generateur
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp03 --etape generateur --rapport sorties/tp03/controle-generateur.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp03/controle-generateur.json
+uv run python outils/verifier.py tp03 --etape generateur
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -122,7 +136,8 @@ réservations, et un second parcours du même objet ne repart pas du début.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 valider réseau IPv4, limite et réservations
@@ -142,6 +157,14 @@ Repères du code fourni :
 La limite porte sur les adresses produites, pas sur celles examinées. hosts() gère aussi les cas /31 et /32.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `adresses` | `["192.0.2.1", "192.0.2.2", "192.0.2.3", "192.0.2.4", "192.0.2.5", "192.0.2.6"]` |
+| `longueurs` | `[6, 0, 6]` |
+| `candidates` | `["192.0.2.2", "192.0.2.4", "192.0.2.5"]` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -188,36 +211,31 @@ réel.
 
 ## Classe Machine — 20 min
 
-**Mise en pratique.** Représenter l’identité et l’état d’une machine sans mélanger collecte et présentation.
+**Votre objectif :** Compléter uniquement la méthode resume.
 
-**À écrire :** La méthode resume dans ma_boite/modeles.py.
+**Fichier à modifier :** `ma_boite/modeles.py`.
 
-**Fourni :** Les deux instances créées par depart.py.
+**À faire dans l’ordre :**
 
-**À observer :** Les attributs de chaque instance et le résultat de resume.
+1. Dans `resume`, créez un texte d’état : `"actif"` si `self.actif` est vrai, sinon `"inactif"`.
+2. Remplacez `return None` par une f-string au format `nom | ip | état`, avec les espaces autour de `|` et les attributs
+   `self.nom`, `self.ip`.
+3. Ne modifiez pas `__init__` : le constructeur et ses trois attributs sont déjà fournis.
 
-1. Lire le constructeur fourni : `__init__(nom, ip, actif=True)` stocke les attributs de chaque instance.
-2. Compléter resume() pour renvoyer "nom | IP | actif" ou "nom | IP | inactif".
-3. Créer alpha et beta, rendre seulement beta inactive, puis vérifier les deux résumés.
-4. Expliquer pourquoi une simple fonction suffirait à un traitement sans état et pourquoi la classe ne doit pas ouvrir
-   une connexion dans `__init__`.
-
-La vérification et la question de transfert sont incluses dans ce temps.
+**Déjà fourni — à conserver :** Constructeur, deux instances et modification de l’état de beta.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp03 classe
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp03 --etape classe --rapport sorties/tp03/controle-classe.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp03/controle-classe.json
+uv run python outils/verifier.py tp03 --etape classe
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -244,7 +262,8 @@ mesure réseau.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 CLASSE Machine :
@@ -262,6 +281,13 @@ Repères du code fourni :
 Utiliser self pour l’état de l’instance. Ne pas mettre une liste de services mutable au niveau de la classe.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `resumes` | `["alpha \| 192.0.2.1 \| actif", "beta \| 192.0.2.2 \| inactif"]` |
+| `alpha_active` | `true` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -294,45 +320,32 @@ Non : actif est ici une donnée déclarée, pas une mesure réseau.
 
 ## Bibliothèque et deux clients — 15 min
 
-**Mise en pratique.** Utiliser les mêmes règles réseau depuis deux outils de préparation du parc.
+**Votre objectif :** Réutiliser votre package, sans nouveau code.
 
-**À écrire :** Aucun nouveau module ; réutiliser les fonctions et la classe déjà complétées.
+**Fichiers à lire :** `generer.py` et `resumer.py`. Aucun fichier à modifier pour cette étape.
 
-**Fourni :** Le package et le pilote clients_bibliotheque.
+**À faire dans l’ordre :**
 
-**À observer :** Les mêmes règles et des imports sans lancement automatique.
+1. Terminez les étapes `generateur` et `classe` : les deux clients utilisent les fichiers que vous venez de compléter.
+2. Ouvrez `generer.py` et `resumer.py` et repérez les imports de `ma_boite`.
+3. Lancez `uv run python ateliers/03/generer.py`, puis `uv run python ateliers/03/resumer.py` : vous devez voir six
+   adresses, puis six résumés.
+4. Exécutez le contrôle ci-dessous. Aucun nouveau TODO n’est demandé pour cette étape.
 
-1. Les fonctions et la classe sont déjà écrites dans les étapes précédentes. Relire les imports de generer.py et
-   resumer.py.
-2. Lancer les deux clients depuis la racine :
-
-   ```sh
-   uv run python ateliers/03/generer.py
-   uv run python ateliers/03/resumer.py
-   ```
-
-   Ils utilisent le même package ma_boite.
-3. Modifier temporairement un réseau dans un client, prédire son résultat, puis rétablir /29 pour le contrôle de
-   référence.
-4. Vérifier generer.txt et resumer.txt : six adresses et six résumés cohérents, sans recopier les fonctions entre les
-   scripts.
-
-La vérification et la question de transfert sont incluses dans ce temps.
+**Déjà fourni — à conserver :** Les deux clients et leur pilote. Cette étape dépend des deux précédentes.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp03 bibliotheque
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp03 --etape bibliotheque --rapport sorties/tp03/controle-bibliotheque.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp03/controle-bibliotheque.json
+uv run python outils/verifier.py tp03 --etape bibliotheque
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -359,7 +372,8 @@ aux deux sans copier son contenu dans les scripts.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 vérifier les fonctions et la classe complétées dans ma_boite
@@ -377,6 +391,14 @@ La solution est dans solution/ma_boite. Importer un départ complet lancerait se
 fonctions.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `nombre` | `6` |
+| `premier` | `"h1 \| 192.0.2.1 \| actif"` |
+| `dernier` | `"h6 \| 192.0.2.6 \| actif"` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -412,49 +434,46 @@ La collecte, l’écriture et les essais de commande sont fournis. Lire les mesu
 interprétations et leur contrôle. Prévoir 10 min de lecture/exécution, 15 min d’interprétation et 10 min de
 vérification/explication.
 
-**Mise en pratique.** Produire un diagnostic horodaté du poste Linux pour préparer une escalade.
+| Observation | Source déjà lue par le code | Limite de l’interprétation |
+| --- | --- | --- |
+| Mémoire | `/proc/meminfo`, dont `MemAvailable` | Un instantané ne prouve pas une fuite mémoire. |
+| Réseau | `ip -j address` et `ip -j route` | La configuration ne prouve pas la connectivité. |
+| Services | `systemctl --failed` | Une commande inaccessible ne prouve pas l’absence d’échec. |
 
-**À écrire :** Les trois interprétations et leur contrôle dans depart.py.
+Les mesures décrivent **le poste où vous lancez le code**. Ce diagnostic s’étudie sur Linux ; les valeurs ne sont pas
+à recopier depuis un autre poste. L’échec enfant de code 4 et le délai dépassé sont des essais contrôlés déjà fournis.
 
-**Fourni :** collecter_local, enregistrement JSON/TXT, observation Linux, essais de commande et journal.
+**Votre objectif :** Rédiger trois interprétations et leur contrôle.
 
-**À observer :** Le poste mesuré, les statuts et les limites des conclusions.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === DIAGNOSTIC`.
 
-1. Identifier une seule fois le poste, le compte et le volume. Le poste distant est le système observé ; ses mesures ne
-   décrivent pas votre ordinateur personnel.
-2. Lire collecter_local dans admin_tools.systeme : rapport contient la date UTC
-   (datetime.now(timezone.utc).isoformat()), getpass.getuser(), socket.gethostname(), platform.system(), le chemin
-   absolu et shutil.disk_usage(dossier). Conserver les valeurs en octets et le pourcentage.
-3. Suivre les appels fournis à lancer pour uname, id et df. Lire
-   observations_linux=observer_linux() fourni : /proc/meminfo (MemAvailable), ip -j address/route et systemctl --failed.
-   Conserver les statuts et sorties ; une commande absente ou inaccessible signifie inconnu.
-4. Lire diagnostic.json et diagnostic.txt, puis écrire interpretation.json avec trois clés memoire/reseau/services,
-   chacune contenant observation (objet collecté), conclusion (phrase) et action (prochaine vérification). Mémoire :
-   instantané sans preuve de fuite ; réseau : configuration sans preuve de connectivité ; services : unités en échec
-   connues de systemd. Utiliser le contexte journal_execution(dossier) fourni : journal.info pour une étape réalisée,
-   journal.error pour les échecs contrôlés, extra={"etape": ..., "cible": ...}. execution.log reçoit la date UTC, le
-   niveau et le contexte.
-5. Avec [sys.executable, str(RACINE / "outils/commande_enfant.py"), "echec"], vérifier le code 4 ; avec attente et
-   timeout=0.1, observer le dépassement de délai. Ces échecs sont contrôlés, les valeurs du poste restent variables.
-6. Compléter le contrôle des interprétations et expliquer les sept autres critères fournis. Garder la répartition de 35
-   minutes annoncée ci-dessus ; aucun paquet à installer pendant ce créneau.
+**À faire dans l’ordre :**
 
-La vérification et la question de transfert sont incluses dans ce temps.
+1. Exécutez d’abord le bloc DIAGNOSTIC pour lire les trois observations affichées : mémoire, réseau et services.
+2. Dans la boucle sur `observations_linux`, remplacez les chaînes vides `conclusion` et `action` par des phrases
+   adaptées à chaque source et à son `statut`. Utilisez des branches `if/elif/else` sur `nom` si nécessaire.
+3. Conservez `observation` telle qu’elle a été collectée. Si une source est indisponible, écrivez que son état est
+   inconnu et proposez une vérification.
+4. Remplacez `observations_interpretees: None` (la clé est entre guillemets dans le code) par un contrôle calculé :
+   trois interprétations, chacune avec une conclusion et une action non vides.
+5. Relisez `interpretation.json` dans le dossier annoncé. Des phrases non vides ne suffisent pas : justifiez leur sens à
+   partir des mesures.
+
+**Déjà fourni — à conserver :** Collecte locale, fichiers JSON/TXT, journal, code d’échec simulé et dépassement de
+délai.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp03 diagnostic
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp03 --etape diagnostic --rapport sorties/tp03/controle-diagnostic.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp03/controle-diagnostic.json
+uv run python outils/verifier.py tp03 --etape diagnostic
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -481,7 +500,8 @@ mesure ponctuelle ne suffit pas à établir une cause.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 dans journal_execution, relever identité, date UTC et volume
@@ -503,6 +523,14 @@ capacité physique totale du serveur. observer_linux est fourni : il faut assemb
 réécrire ses parseurs.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `identite` | `true` |
+| `disque_coherent` | `true` |
+| `commande_reussie` | `true` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -535,6 +563,14 @@ La pression mémoire est observée à un instant ; l’état des services reste 
 établis. Comparer plusieurs relevés, les processus et les droits/gestionnaire de services.
 
 </details>
+
+## Valider votre travail
+
+Depuis la racine du projet, après avoir terminé les étapes :
+
+```sh
+uv run python outils/verifier.py tp03 --complet
+```
 
 ## Comprendre la correction
 

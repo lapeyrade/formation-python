@@ -19,6 +19,8 @@ dossier_tp_racine = dossier_tp("tp03")
 resultats_tp = {}
 
 # === GENERATEUR — Générateur d’IP (30 min) ===
+# CONSIGNE : Exclure les réservations puis produire une adresse.
+# FICHIER : ma_boite/reseau.py. Voir README.md, section generateur.
 dossier = preparer_etape(dossier_tp_racine, "generateur")
 resultat = None
 
@@ -32,6 +34,8 @@ resultat["candidates"] = list(generer_ips("192.0.2.0/29", ["192.0.2.1", "192.0.2
 resultats_tp["generateur"] = resultat
 
 # === CLASSE — Classe Machine (20 min) ===
+# CONSIGNE : Compléter uniquement la méthode resume.
+# FICHIER : ma_boite/modeles.py. Voir README.md, section classe.
 dossier = preparer_etape(dossier_tp_racine, "classe")
 resultat = None
 
@@ -43,6 +47,8 @@ resultat = {"resumes": [a.resume(), b.resume()], "alpha_active": a.actif}
 resultats_tp["classe"] = resultat
 
 # === BIBLIOTHEQUE — Bibliothèque et deux clients (15 min) ===
+# CONSIGNE : Réutiliser votre package, sans nouveau code.
+# FICHIER : generer.py et resumer.py — lecture seule. Voir README.md, section bibliotheque.
 dossier = preparer_etape(dossier_tp_racine, "bibliotheque")
 resultat = None
 
@@ -55,6 +61,8 @@ resultat = clients_bibliotheque(clients, dossier, ips, machines)
 resultats_tp["bibliotheque"] = resultat
 
 # === DIAGNOSTIC — Diagnostic de la machine (35 min) ===
+# CONSIGNE : Rédiger trois interprétations et leur contrôle.
+# FICHIER : depart.py. Voir README.md, section diagnostic.
 dossier = preparer_etape(dossier_tp_racine, "diagnostic")
 # Fourni : la collecte est locale et en lecture seule ; ses valeurs varient par poste.
 with journal_execution(dossier) as journal:

@@ -18,6 +18,8 @@ dossier_tp_racine = dossier_tp("tp05")
 resultats_tp = {}
 
 # === SQLITE — Importer un CSV dans SQLite (30 min) ===
+# CONSIGNE : Insérer avec des paramètres et compter depuis la base.
+# FICHIER : depart.py. Voir README.md, section sqlite.
 dossier = preparer_etape(dossier_tp_racine, "sqlite")
 source = DONNEES / "rapport_complet.csv"
 base = dossier / "incidents.sqlite"
@@ -62,6 +64,8 @@ resultat = {
 resultats_tp["sqlite"] = resultat
 
 # === API — API et géolocalisation (30 min) ===
+# CONSIGNE : Traiter deux réponses métier.
+# FICHIER : depart.py. Voir README.md, section api.
 dossier = preparer_etape(dossier_tp_racine, "api")
 
 
@@ -102,12 +106,16 @@ resultat = {
 resultats_tp["api"] = resultat
 
 # === SCRAPY — Extraire une page avec Scrapy (25 min) ===
+# CONSIGNE : Extraire trois champs de chaque carte HTML.
+# FICHIER : spider.py. Voir README.md, section scrapy.
 dossier = preparer_etape(dossier_tp_racine, "scrapy")
 # TODO : trois champs à compléter dans spider.py ; le pilote gère serveur et export JSON.
 resultat = collecter_html(Path(__file__).with_name("spider.py"), dossier)
 resultats_tp["scrapy"] = resultat
 
 # === ARCHIVES — Archives contrôlées (15 min) ===
+# CONSIGNE : Comparer le contenu réellement relu.
+# FICHIER : depart.py. Voir README.md, section archives.
 dossier = preparer_etape(dossier_tp_racine, "archives")
 fichiers = [DONNEES / "rapport_complet.csv", DONNEES / "rapport_complet.xlsx"]
 # Fourni : les deux formats réutilisent archiver ; lire sa gestion des noms et modes.

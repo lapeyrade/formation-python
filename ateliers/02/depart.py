@@ -13,6 +13,8 @@ dossier_tp_racine = dossier_tp("tp02")
 resultats_tp = {}
 
 # === FONCTIONS — Fonctions réutilisables (20 min) ===
+# CONSIGNE : Deux retours de fonctions.
+# FICHIER : depart.py. Voir README.md, section fonctions.
 dossier = preparer_etape(dossier_tp_racine, "fonctions")
 
 
@@ -39,6 +41,8 @@ resultat = {
 resultats_tp["fonctions"] = resultat
 
 # === MUTABILITE — Mutabilité et effets de bord (10 min) ===
+# CONSIGNE : Deux partages de liste à corriger.
+# FICHIER : depart.py. Voir README.md, section mutabilite.
 dossier = preparer_etape(dossier_tp_racine, "mutabilite")
 original = ["ssh"]
 copie = original  # TODO 1 : créer une copie indépendante avant l'ajout.
@@ -55,6 +59,8 @@ resultat = {"original": original, "copie": copie, "premier": ajouter("a"), "seco
 resultats_tp["mutabilite"] = resultat
 
 # === FICHIERS — Fichiers et exceptions (20 min) ===
+# CONSIGNE : Une copie binaire et trois traitements d’erreur.
+# FICHIER : depart.py et debogage.py. Voir README.md, section fichiers.
 dossier = preparer_etape(dossier_tp_racine, "fichiers")
 # Fourni : with ferme le fichier et UTF-8 conserve les accents.
 with (DONNEES / "message.txt").open(encoding="utf-8") as fichier:
@@ -91,6 +97,8 @@ resultat = {
 resultats_tp["fichiers"] = resultat
 
 # === INVENTAIRE — Inventaire fiable (35 min) ===
+# CONSIGNE : Valider une ligne, puis traiter un fichier absent.
+# FICHIER : depart.py. Voir README.md, section inventaire.
 dossier = preparer_etape(dossier_tp_racine, "inventaire")
 
 
@@ -141,6 +149,8 @@ resultat = {
 resultats_tp["inventaire"] = resultat
 
 # === UV — Modules et projet uv (15 min) ===
+# CONSIGNE : Une valeur de retour et un projet d’essai.
+# FICHIER : inventaire_module.py. Voir README.md, section uv.
 dossier = preparer_etape(dossier_tp_racine, "uv")
 # TODO : compléter etiquette dans inventaire_module.py ; le pilote gère l'installation.
 resultat = projet_uv(Path(__file__).with_name("inventaire_module.py"), dossier)

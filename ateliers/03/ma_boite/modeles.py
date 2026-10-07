@@ -1,4 +1,4 @@
-"""TP 03 — compléter le constructeur et la méthode de résumé."""
+"""TP 03 — constructeur fourni ; compléter uniquement la méthode de résumé."""
 
 
 class Machine:

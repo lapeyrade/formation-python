@@ -15,6 +15,8 @@ dossier_tp_racine = dossier_tp("tp04")
 resultats_tp = {}
 
 # === LOGS — Analyser des logs (40 min) ===
+# CONSIGNE : Trois compteurs à compléter.
+# FICHIER : depart.py. Voir README.md, section logs.
 dossier = preparer_etape(dossier_tp_racine, "logs")
 # Fourni : MOTIF décrit le format SSH de l'échantillon ; ouvrir metier.py pour le lire.
 compteurs, rejets = {}, []
@@ -51,12 +53,16 @@ resultat = {
 resultats_tp["logs"] = resultat
 
 # === ARGUMENTS — Arguments de commande (15 min) ===
+# CONSIGNE : Ajouter une option au parseur.
+# FICHIER : cli.py. Voir README.md, section arguments.
 dossier = preparer_etape(dossier_tp_racine, "arguments")
 # TODO : ajouter --sortie dans cli.py ; les autres options et les essais sont fournis.
 resultat = verifier_arguments(Path(__file__).with_name("cli.py"), dossier)
 resultats_tp["arguments"] = resultat
 
 # === PANDAS — CSV et Excel avec Pandas (20 min) ===
+# CONSIGNE : Remplir la colonne site avant l’export.
+# FICHIER : depart.py. Voir README.md, section pandas.
 dossier = preparer_etape(dossier_tp_racine, "pandas")
 inventaire = pd.read_csv(DONNEES / "inventaire.csv", dtype={"ip": str})
 excel = pd.read_excel(DONNEES / "inventaire.xlsx", dtype={"ip": str})
@@ -75,6 +81,8 @@ resultat = {
 resultats_tp["pandas"] = resultat
 
 # === RAPPORT — Rapport complet et alertes (25 min) ===
+# CONSIGNE : Conserver les IP inconnues dans la jointure.
+# FICHIER : depart.py. Voir README.md, section rapport.
 dossier = preparer_etape(dossier_tp_racine, "rapport")
 # Chaque bloc repart de la source pour rester exécutable indépendamment.
 compteurs = analyser_logs(DONNEES / "auth.log")["compteurs"]

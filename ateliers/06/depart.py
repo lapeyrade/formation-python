@@ -34,6 +34,8 @@ dossier_tp_racine = dossier_tp("tp06")
 resultats_tp = {}
 
 # === EMAIL — Message et pièce jointe (15 min) ===
+# CONSIGNE : Adapter le sujet et contrôler la pièce reçue.
+# FICHIER : depart.py. Voir README.md, section email.
 dossier = preparer_etape(dossier_tp_racine, "email")
 resultat = None
 
@@ -56,6 +58,8 @@ resultat = {
 resultats_tp["email"] = resultat
 
 # === DISTANT — Fabric et Ansible sur deux machines (40 min) ===
+# CONSIGNE : Une extraction disque, puis des manipulations guidées.
+# FICHIER : mes_collectes.py. Voir README.md, section distant.
 dossier = preparer_etape(dossier_tp_racine, "distant")
 resultat = None
 
@@ -70,6 +74,8 @@ else:
 resultats_tp["distant"] = resultat
 
 # === INTEGRATION — Chaîne complète de rapport (15 min) ===
+# CONSIGNE : Assembler l’archive, envoyer puis compter.
+# FICHIER : depart.py. Voir README.md, section integration.
 dossier = preparer_etape(dossier_tp_racine, "integration")
 resultat = None
 

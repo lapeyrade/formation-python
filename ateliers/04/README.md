@@ -26,26 +26,46 @@ flowchart TD
 
 La jointure conserve les IP inconnues. Une alerte demande une investigation ; elle ne prouve pas une intrusion.
 
-## Fichiers et démarrage
+## Où travailler et quoi modifier
 
-Compléter cli.py pour argparse. L’IP après from dans un événement SSH est la source ; le nom avant sshd est la cible. Le
-rapprochement porte ici sur les sources connues. Le parseur vise le format fourni, pas tous les journaux OpenSSH.
+**Commencez par la première ligne du tableau ci-dessous.** Les fichiers existent déjà ; ouvrez-les dans l’éditeur.
+Les chemins du tableau sont relatifs à ce dossier de TP. Enregistrez après chaque modification.
 
-```sh
-uv run python ateliers/04/depart.py
-uv run python outils/verifier.py tp04 --complet
+| Étape | Fichier à ouvrir | Travail demandé |
+| --- | --- | --- |
+| [logs](#logs) | [depart.py](depart.py) | Trois compteurs à compléter |
+| [arguments](#arguments) | [cli.py](cli.py) | Ajouter une option au parseur |
+| [pandas](#pandas) | [depart.py](depart.py) | Remplir la colonne site avant l’export |
+| [rapport](#rapport) | [depart.py](depart.py) | Conserver les IP inconnues dans la jointure |
+
+Les imports, les données de référence, les repères `# ===` et l’enregistrement des résultats sont fournis.
+Ne réécrivez pas tout le script et ne remplacez pas les calculs par les résultats attendus.
+`TODO` signifie « partie à compléter » ; les exemples et extraits du README sont à lire, pas à copier en bloc.
+
+Toutes les commandes se lancent dans un terminal à la racine du projet, où se trouve `pyproject.toml`.
+Si nécessaire, préparez l’environnement avec `uv sync --locked`. Avancez avec le contrôle de chaque étape ;
+le contrôle complet n’est demandé qu’à la fin. Un résultat `À revoir` est normal avant de compléter votre code.
+Le vérificateur relance l’étape et compare vos productions. Les chemins de sorties changent à chaque essai.
+
+## Voir les données avant de coder
+
+Extrait réel de [donnees/auth.log](../../donnees/auth.log) :
+
+```text
+Oct  5 09:00:00 srv-bastion sshd[1234]: Failed password for root from 192.0.2.1 port 50222 ssh2
+Oct  5 09:00:01 srv-bastion sshd[1234]: Failed password for invalid user admin from 192.0.2.1 port 50222 ssh2
 ```
 
-Les commandes se lancent à la racine du projet dans le terminal Linux. Les valeurs « À compléter » sont normales au
-départ. Complétez les repères TODO et conservez les données de référence. Les lectures, les chemins et une partie des
-contrôles sont fournis ; le fichier de départ peut déjà produire des sorties incomplètes. Chaque essai produit un
-dossier dans sorties/ ; le vérificateur relance votre code.
+Extrait réel de [donnees/inventaire.csv](../../donnees/inventaire.csv) :
 
-## Travailler avec les amorces
+```csv
+nom,ip,site,actif,charge
+srv-paris-web-01,192.0.2.1,paris,True,20
+srv-paris-web-02,192.0.2.2,paris,True,65
+```
 
-Les repères `TODO` désignent le travail à compléter. Lire aussi les lignes fournies : leur rôle doit pouvoir être
-expliqué. Garder le dernier tiers de chaque créneau pour lancer, lire les résultats et répondre à la question de
-transfert. Les corrigés détaillent les décisions et restent dans des fichiers séparés pour comparer votre version.
+Les adresses des logs sont les IP sources des événements. Le rapprochement avec l’inventaire est une convention de cet
+exercice, pas une preuve d’identité en situation réelle.
 
 ## Parcours
 
@@ -62,44 +82,41 @@ La regex, la lecture et les rejets sont fournis. Compléter les trois compteurs 
 expliquer l’analyse Web fournie. Réserver 10 min au format, 20 min aux modifications/essais et 10 min au
 contrôle/transfert.
 
-**Mise en pratique.** Qualifier des échecs SSH et des erreurs Web avant de demander une investigation.
+**Votre objectif :** Trois compteurs à compléter.
 
-**À écrire :** Les trois incréments dans depart.py ; expliquer les rejets fournis.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === LOGS`.
 
-**Fourni :** Motifs, lecture, validation IP, rejets, filtre d’alertes et analyse Web.
+**À faire dans l’ordre :**
 
-**À observer :** IP source, cible, succès, échecs et rejets distincts.
+1. Après la validation de l’IP, ajoutez `valides += 1` au TODO 1.
+2. Dans la branche `Accepted publickey`, remplacez `pass` par `succes += 1`.
+3. Dans la branche `else`, remplacez `pass` par `compteurs[ip] = compteurs.get(ip, 0) + 1`.
+4. Lisez le motif `MOTIF` dans `src/admin_tools/metier.py` et expliquez les deux rejets. Aucune regex n’est à réécrire
+   ici.
 
-1. Lire les neuf lignes de auth.log : formats OpenSSH synthétiques, dont invalid user, clé acceptée, IP invalide et
-   ligne non reconnue.
-2. Utiliser le MOTIF fourni dans admin_tools.metier ; fullmatch puis groupes statut et ip. Valider l’IP avec ipaddress
-   avant de compter.
-3. Construire compteurs, rejets, valides et succes ; conserver trois IP ayant 3, 2 et 1 échecs. Garder les alertes >=2
-   séparément.
-4. Lire analyser_web et son motif MOTIF_WEB : expliquer le comptage des 4xx/5xx et des lignes rejetées
-   dans resultat["web"].
-5. Sur auth_volume.log, vérifier que vingt répétitions donnent 180 lignes, 140 événements acceptés et 40 rejets. Le
-   contrôle de référence reste sur auth.log.
-6. Après le contrôle de référence, observer un log ou un journal disponible sur le poste Linux : identifier service,
-   date et format. La commande et la source sont choisies selon le poste. Une absence de log ou un format différent ne
-   modifie pas les résultats attendus sur les fichiers fournis.
+**Déjà fourni — à conserver :** Expression régulière, lecture, validation IP, rejets, filtre des alertes et analyse Web.
 
-La vérification et la question de transfert sont incluses dans ce temps.
+**À observer après le contrôle :**
+
+| Fichier ou traitement fourni | Observation à expliquer |
+| --- | --- |
+| `MOTIF` dans `src/admin_tools/metier.py` | Quels groupes extraient le statut et l’IP ? |
+| Validation par `ipaddress` | Pourquoi la regex seule ne suffit-elle pas pour `999.0.0.1` ? |
+| `donnees/access.log` et `analyser_web` | Distinguer succès HTTP, erreurs 4xx et erreurs 5xx. |
+| Compteurs SSH | Une connexion réussie ne doit pas augmenter le nombre d’échecs. |
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp04 logs
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp04 --etape logs --rapport sorties/tp04/controle-logs.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp04/controle-logs.json
+uv run python outils/verifier.py tp04 --etape logs
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -126,7 +143,8 @@ les lignes rejetées et les faibles compteurs restent visibles.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 initialiser compteurs, rejets, événements valides et succès
@@ -148,6 +166,14 @@ Motifs fournis, algorithme de comptage à écrire. Accepted publickey est un suc
 inclut le cas invalid user. Ne pas supposer qu’une regex valide une IP.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `compteurs` | `{"192.0.2.1": 3, "192.0.2.2": 2, "192.0.2.99": 1}` |
+| `valides` | `7` |
+| `succes` | `1` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -205,35 +231,33 @@ uv run python ateliers/04/cli.py donnees/auth.log --seuil 0
 Le dernier appel doit refuser le seuil et terminer avec le code 2. Les deux fichiers JSON du cas valide sont dans
 `sorties/essai-cli/`.
 
-**Mise en pratique.** Rendre l’analyse utilisable sur un autre fichier sans éditer le code.
+**Votre objectif :** Ajouter une option au parseur.
 
-**À écrire :** L’option --sortie dans cli.py ; observer les autres options et erreurs fournies.
+**Fichier à modifier :** `cli.py`.
 
-**Fourni :** Le format des résultats et les cas de contrôle.
+**À faire dans l’ordre :**
 
-**À observer :** L’aide, les codes retour, stdout et stderr.
+1. Dans `parseur_logs`, ajoutez l’option `"--sortie"` avec `type=Path` et `default=Path("sorties/logs")` via
+   `parser.add_argument(...)`.
+2. Gardez les autres options et la gestion d’erreur. Enregistrez puis affichez l’aide avec
+   `uv run python ateliers/04/cli.py --help`.
+3. Lancez `uv run python ateliers/04/cli.py donnees/auth.log --seuil 2 --sortie sorties/essai-cli` : résultat attendu,
+   `3 IP, 2 alertes`.
 
-1. Compléter cli.py : source positionnelle, --seuil validé par positif, --sortie de type Path.
-2. Produire compteurs.json et alertes.json séparément. Ne pas supprimer les faibles compteurs du rapport complet.
-3. Exécuter --help, --seuil abc, --seuil 0 et une source absente : codes attendus 0, 2, 2, 1.
-4. Lancer sur auth_volume.log avec un seuil plus élevé, puis revenir aux paramètres de référence.
-
-La vérification et la question de transfert sont incluses dans ce temps.
+**Déjà fourni — à conserver :** Argument source, seuil positif, analyse, exports et cas d’erreurs du pilote.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp04 arguments
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp04 --etape arguments --rapport sorties/tp04/controle-arguments.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp04/controle-arguments.json
+uv run python outils/verifier.py tp04 --etape arguments
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -260,7 +284,8 @@ et une exécution réussie.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 définir source, seuil strictement positif et sortie dans argparse
@@ -279,6 +304,13 @@ Repères du code fourni :
 Le pilote verifier_arguments lance les essais. L’aide ne doit pas lire de fichier ni lancer la collecte.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `codes_help_invalide_zero_absent` | `[0, 2, 2, 1]` |
+| `rapport_cree` | `true` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -313,35 +345,30 @@ Le seuil dépend du volume et du besoin ; il doit pouvoir varier sans réécrire
 
 ## CSV et Excel avec Pandas — 20 min
 
-**Mise en pratique.** Comparer les formats d’un inventaire et rendre une localisation manquante visible.
+**Votre objectif :** Remplir la colonne site avant l’export.
 
-**À écrire :** Le remplacement du site absent avec fillna ; suivre les lectures et exports fournis.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === PANDAS`.
 
-**Fourni :** Les CSV/Excel et la variante avec site manquant.
+**À faire dans l’ordre :**
 
-**À observer :** Les types, colonnes et lignes conservées.
+1. Dans le bloc PANDAS, au TODO, affectez à `variante["site"]` le résultat de `variante["site"].fillna("inconnu")`.
+2. Placez cette affectation avant `variante.to_excel(...)`. Appeler `fillna` sans conserver son résultat ne suffit pas.
+3. Gardez les lectures et la relecture de `nettoye.xlsx` ; vérifiez qu’un site manquant devient `inconnu`.
 
-1. Lire inventaire.csv et inventaire.xlsx en conservant ip comme texte. Comparer les huit lignes et les colonnes.
-2. Lire inventaire_site_manquant.csv et remplacer le site absent par inconnu, sans retirer la machine.
-3. Compter les machines par site sur la référence : quatre à Paris, quatre à Lyon.
-4. Exporter la variante nettoyée vers nettoye.xlsx, puis la relire et compter le site inconnu.
-
-La vérification et la question de transfert sont incluses dans ce temps.
+**Déjà fourni — à conserver :** Lectures CSV/Excel, export, relecture et comptages.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp04 pandas
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp04 --etape pandas --rapport sorties/tp04/controle-pandas.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp04/controle-pandas.json
+uv run python outils/verifier.py tp04 --etape pandas
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -368,7 +395,8 @@ vérifie la donnée réellement enregistrée.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 lire le CSV et l’Excel avec ip conservée comme texte
@@ -387,6 +415,14 @@ Utiliser fillna sur la colonne site, pas une suppression globale des lignes. ind
 dans le rapport.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `lignes` | `8` |
+| `formats_identiques` | `true` |
+| `sites_reference` | `{"lyon": 4, "paris": 4}` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -431,40 +467,46 @@ Pas toujours : attribution et historique peuvent changer. Le TP suppose explicit
 La création du tableau et les exports sont fournis. Corriger le type de jointure, le traitement des inconnus et leur
 compteur ; observer la ligne perdue avant la correction.
 
-**Mise en pratique.** Rapprocher les observations et le parc pour indiquer quelles machines examiner.
+### Pourquoi garder le tableau de gauche ?
 
-**À écrire :** Le type de jointure, le remplissage des inconnus et leur compteur dans depart.py.
+```mermaid
+flowchart LR
+  A["Échecs observés : .1, .2, .99"] --> J["Jointure gauche sur ip"]
+  B["Inventaire : .1 à .8"] --> J
+  J --> C[".1 et .2 : identité connue"]
+  J --> D[".99 : nom et site manquants"]
+  D --> E["fillna : inconnu"]
+```
 
-**Fourni :** Comptage, table, jointure à corriger, filtre et exports ; rapprocher est la référence.
+Une jointure interne supprimerait .99 et ferait disparaître une observation utile du rapport.
 
-**À observer :** Le total de six échecs et l’IP inconnue conservée.
+**Votre objectif :** Conserver les IP inconnues dans la jointure.
 
-[Suivre la même IP jusqu’au message](../../docs/fil-donnee.md) permet de relire le résultat de cette étape dans le
-parcours complet.
+**Fichier à modifier :** `depart.py`. Repérez le bloc `# === RAPPORT`.
 
-1. Construire une table des compteurs SSH puis faire une jointure gauche avec inventaire sur ip ; vérifier la
-   cardinalité one_to_one.
-2. Conserver l’IP .99 absente du parc et remplir nom/site avec inconnu.
-3. Exporter rapport_complet en CSV et Excel, puis alertes avec echecs >=2 dans des fichiers distincts.
-4. Contrôler trois IP, six échecs, une inconnue ; deux alertes totalisant cinq échecs. Lire une ligne et expliquer la
-   prochaine vérification opérationnelle.
+**À faire dans l’ordre :**
 
-La vérification et la question de transfert sont incluses dans ce temps.
+1. Dans le bloc RAPPORT, remplacez `how="inner"` par `how="left"` dans `bilan.merge(...)` : le tableau de gauche
+   contient les IP observées.
+2. Avant la sélection finale des colonnes, remplissez les valeurs manquantes des colonnes `nom` et `site` avec
+   `"inconnu"` et réaffectez le résultat.
+3. Dans `resultat`, remplacez la valeur `None` de `inconnus` par le nombre de lignes où `rapport["nom"] == "inconnu"`
+   (somme convertie avec `int`).
+
+**Déjà fourni — à conserver :** Comptage des logs, tri, filtre d’alertes, exports CSV/Excel.
 
 Depuis la racine du projet, lancer seulement cette étape, puis contrôler les résultats :
 
 ```sh
-# 1. Exécuter votre code pour cette étape
 uv run python outils/executer_etape.py tp04 rapport
-# 2. Comparer les résultats et les fichiers au contrat
-uv run python outils/verifier.py tp04 --etape rapport --rapport sorties/tp04/controle-rapport.json
-# 3. Relire le contrôle et le chemin de son essai
-uv run python -m json.tool sorties/tp04/controle-rapport.json
+uv run python outils/verifier.py tp04 --etape rapport
 ```
 
 Au premier essai, « À revoir » et un code de sortie 1 du vérificateur sont attendus tant que les TODO manquent. Après
 modification, relancer les mêmes commandes jusqu’à « Conforme ». Chaque lancement crée un nouvel essai ; ouvrir les
-productions dans le champ `dossier` du dernier contrôle, puis comparer aux critères ci-dessous.
+productions dans le dossier d’essai indiqué par le dernier contrôle, puis comparer aux critères ci-dessous.
+
+**Étape terminée :** le contrôle affiche `Conforme` et vous pouvez expliquer les modifications réalisées.
 
 <details>
 <summary>Exécuter la correction de cette étape</summary>
@@ -491,7 +533,8 @@ distincts ; la jointure ne doit pas multiplier les lignes.
 <details>
 <summary>Indice 2 - Pseudo-code</summary>
 
-Pseudo-code à traduire dans les fichiers demandés, à partir des données du TP :
+Ce pseudo-code décrit le traitement complet, y compris les parties déjà fournies. Il sert à comprendre ;
+ne réécrivez que les éléments indiqués dans « À faire dans l’ordre ».
 
 ```text
 transformer les compteurs en une table ip/echecs
@@ -510,6 +553,14 @@ La référence rapprocher dans admin_tools.rapports refuse les IP dupliquées. N
 arbitrairement ses doublons.
 
 </details>
+
+**Repères de réussite sur les données fournies :**
+
+| Champ du bilan | Valeur attendue |
+| --- | --- |
+| `lignes` | `3` |
+| `echecs` | `6` |
+| `inconnus` | `1` |
 
 <details>
 <summary>Critères du contrôle de référence</summary>
@@ -537,6 +588,14 @@ leur cohérence est contrôlée.
 L’absence de correspondance est une information ; une jointure interne ferait disparaître cette observation.
 
 </details>
+
+## Valider votre travail
+
+Depuis la racine du projet, après avoir terminé les étapes :
+
+```sh
+uv run python outils/verifier.py tp04 --complet
+```
 
 ## Comprendre la correction
 

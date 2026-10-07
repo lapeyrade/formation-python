@@ -1,5 +1,7 @@
 # TP 01 — Qualifier un parc et préparer ses réseaux
 
+Vous débutez en Python ? Faites d’abord l’[atelier 0](../00/README.md) avant ce TP.
+
 [Retour au parcours](../../README.md) — **85 minutes**, essais et autocorrection compris.
 
 ## Mission et production

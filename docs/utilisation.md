@@ -2,6 +2,18 @@
 
 [Retour à l’accueil](../README.md)
 
+## Si vous débutez en Python
+
+Commencez par l’[atelier 0](../ateliers/00/README.md). Il propose six petits fichiers indépendants et son propre
+contrôle :
+
+```sh
+uv run python ateliers/00/01_variables.py
+uv run python ateliers/00/verifier.py 1
+```
+
+Les commandes `outils/verifier.py` ci-dessous concernent les TP 01 à 06 ; elles n’incluent pas l’atelier 0.
+
 ## Quels fichiers modifier ?
 
 Dans chaque dossier, `README.md` donne la mission et les critères de réussite. Modifiez les blocs à compléter dans

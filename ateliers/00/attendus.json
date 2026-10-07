@@ -1,0 +1,8 @@
+{
+  "01_variables": "srv-web-01\n10\nTrue\n",
+  "02_texte": "srv-web-01\n23\nsrv-web-01:22\n",
+  "03_collections": "3\nsrv-web-01\nsrv-web-01\n",
+  "04_conditions": "alerte\n",
+  "05_boucles": "srv-web-01\nsrv-backup-01\nActives : 2\n",
+  "06_fonctions": "True\nFalse\nFalse\n"
+}

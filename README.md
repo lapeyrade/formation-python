@@ -1,8 +1,8 @@
 # Python pour l’administration système
 
 Automatisez une intervention sur un parc : inventaire, adressage, diagnostic Linux, analyse d’incidents et collecte SSH.
-Vous connaissez déjà les variables, collections, conditions, boucles et fonctions ; le cours transpose ces acquis en
-Python. Six TP fournissent leurs données, aides, corrigés et contrôles.
+Vous débutez en Python ? Commencez par l’[atelier 0 : les bases de Python](ateliers/00/README.md), guidé sur 1 h 30.
+Six TP d’administration système prolongent cette introduction avec leurs données, aides, corrigés et contrôles.
 
 ## Récupérer le projet
 
@@ -167,10 +167,11 @@ Ne transférez pas `.venv` d’un système à l’autre. Les cibles SSH se prép
 - **Import introuvable :** relancez `uv sync --locked`, puis utilisez `uv run python`, pas un Python système différent.
 - **Téléchargement refusé :** transmettez le message au formateur pour vérifier le proxy ou les restrictions du poste.
 
-## Les six TP
+## Le parcours
 
 | TP | Objectif |
 | --- | --- |
+| 00 | [Prendre en main Python : variables, collections, conditions, boucles et fonctions](ateliers/00/README.md) |
 | 01 | [Qualifier un parc et préparer ses réseaux](ateliers/01/README.md) |
 | 02 | [Fiabiliser un import et réutiliser son code](ateliers/02/README.md) |
 | 03 | [Préparer un adressage et diagnostiquer un hôte](ateliers/03/README.md) |

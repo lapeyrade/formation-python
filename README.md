@@ -145,7 +145,7 @@ PowerShell. Le nom et les chemins affichés sont ceux de votre ordinateur, pas c
 | TP 01 : types, boucles, texte et masques | Mécanismes Python portables ; commencer avec les commandes ci-dessus. |
 | Fichiers, CSV/Excel, SQLite, API et archives | Bibliothèques disponibles, mais tous les scripts du parcours ne sont pas validés sur Windows. |
 | Diagnostic Linux du TP 03 | Nécessite Linux pour observer `/proc`, les routes avec `ip` et les unités `systemd`. |
-| Contrôleur Ansible du TP 06 | Windows natif non pris en charge ; macOS peut être contrôleur, avec deux cibles Linux accessibles. |
+| Contrôleur Ansible du TP 06 | Windows natif non pris en charge ; macOS peut être contrôleur, avec une cible Linux accessible (la VM elle-même suffit). |
 
 Le diagnostic global `outils/diagnostic.py` vérifie le contexte prévu pour toute la formation, dont Ansible :
 il ne constitue pas le test de démarrage du TP 01 sous Windows. Les observations Linux peuvent être signalées comme
@@ -153,7 +153,7 @@ non applicables sur un autre système ; cela ne signifie pas que leurs objectifs
 
 Pour poursuivre le parcours complet, privilégiez le poste Linux de formation. Une VM Linux, ou WSL2 sous Windows,
 peut servir de secours après préparation et vérification avec le formateur ; WSL2 ne garantit pas à lui seul la
-présence de systemd ni les accès aux deux cibles. Ansible précise que WSL n’est pas un contrôleur officiellement
+présence de systemd ni l’accès SSH à la VM. Ansible précise que WSL n’est pas un contrôleur officiellement
 pris en charge pour la production : voir les
 [limites Windows d’Ansible](https://docs.ansible.com/projects/ansible/latest/os_guide/intro_windows.html).
 
@@ -188,7 +188,7 @@ d’installation et de connexion illustrent aussi les rôles du poste de travail
 - [Installer et vérifier le projet](docs/installation.md)
 - [Se repérer dans Linux](docs/linux.md)
 - [Exécuter, contrôler et retrouver les résultats](docs/utilisation.md)
-- [Configurer les deux cibles SSH](laboratoire/README.md)
+- [Configurer SSH sur votre VM](laboratoire/README.md)
 - [Mémo Python et uv, avec glossaire](docs/memo-python-uv.md)
 - [Suivre une donnée jusqu’au message](docs/fil-donnee.md)
 - [Réutiliser un script après le cours](docs/exploiter-script.md)
@@ -196,8 +196,8 @@ d’installation et de connexion illustrent aussi les rôles du poste de travail
 - [Auto-évaluation](docs/auto-evaluation.md) et [questionnaires de progression](docs/questionnaires.md)
 
 Python et Ansible sont gérés avec uv. Les services HTTP et SMTP de test tournent dans le poste Linux ; un appel public
-guidé complète la géolocalisation du TP 05 ; les e-mails sont capturés localement. Docker est seulement une solution de
-secours pour fournir deux cibles SSH.
+guidé complète la géolocalisation du TP 05 ; les e-mails sont capturés localement. Le TP 06 utilise SSH vers la VM
+elle-même. Docker reste une variante facultative à deux cibles.
 
 ## Récupérer votre travail
 

@@ -108,8 +108,9 @@ uv run python outils/verifier.py tp06 --complet --laboratoire
 ```
 
 Sans `--laboratoire`, la partie locale reste utilisable ; la collecte distante est annoncée comme non exécutée. L’option
-demande réellement des connexions aux deux cibles de l’inventaire et deux passages Ansible natifs. Les cibles peuvent
-être des postes Linux fournis ou les deux conteneurs de secours ; leurs noms, ports et utilisateurs sont configurables.
+demande réellement des connexions aux cibles déclarées dans l’inventaire et deux passages Ansible natifs. Les cibles
+peuvent être des postes Linux fournis ou les deux conteneurs de secours ; leurs noms, ports et utilisateurs sont
+configurables.
 
 ## Réutiliser vos rapports
 

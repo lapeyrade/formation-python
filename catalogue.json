@@ -393,7 +393,7 @@
       },
       {
         "cle": "distant",
-        "titre": "Fabric et Ansible sur deux machines",
+        "titre": "Fabric et Ansible sur la VM",
         "minutes": 40,
         "attendus": {
           "cibles_attendues": true,
@@ -405,10 +405,10 @@
           "contenus_conformes": true,
           "permissions_conformes": true,
           "apercu_sans_modification": true,
-          "logs_telecharges": 2,
-          "evenements_logs": 4,
-          "echecs_logs": 2,
-          "scripts_executes": 2
+          "logs_telecharges": 1,
+          "evenements_logs": 2,
+          "echecs_logs": 1,
+          "scripts_executes": 1
         },
         "laboratoire": true
       },

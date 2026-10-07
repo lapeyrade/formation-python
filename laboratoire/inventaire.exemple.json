@@ -2,7 +2,13 @@
   "cle": "id_ed25519",
   "known_hosts": "known_hosts",
   "cibles": [
-    {"nom": "cible-a", "hote": "192.0.2.10", "port": 22, "utilisateur": "user", "python": "/usr/bin/python3", "dossier_tp": "/home/user/pyx-tp06"},
-    {"nom": "cible-b", "hote": "192.0.2.11", "port": 22, "utilisateur": "user", "python": "/usr/bin/python3", "dossier_tp": "/home/user/pyx-tp06"}
+    {
+      "nom": "vm-locale",
+      "hote": "127.0.0.1",
+      "port": 22,
+      "utilisateur": "user",
+      "python": "/usr/bin/python3",
+      "dossier_tp": "/home/user/pyx-tp06"
+    }
   ]
 }

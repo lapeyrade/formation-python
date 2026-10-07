@@ -152,7 +152,8 @@ Un HTTP réussi peut contenir un JSON invalide ou une réponse métier indisponi
 
 </details>
 
-**Q10 — Fabric collecte une seule des deux cibles demandées. Quelle conclusion retenir ?**
+**Q10 — Dans la variante à plusieurs machines, Fabric collecte une seule des deux cibles demandées. Quelle conclusion
+retenir ?**
 
 - A. Le parc est en bon état.
 - B. Conserver le succès et l’erreur, signaler la portée partielle, bloquer la diffusion complète.

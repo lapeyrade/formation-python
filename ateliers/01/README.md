@@ -14,9 +14,9 @@ Ce TP fonctionne aussi sur votre ordinateur personnel, sans Linux ni RustDesk.
 
 | Étape | Repère dans `depart.py` | Votre travail | Durée |
 | --- | --- | --- | --- |
-| 1 | `# === TYPES` | Remplacer une valeur pour convertir « oui/non » en booléen. | 25 min |
-| 2 | `# === BOUCLES` | Compléter une condition et ajouter une ligne dans la boucle `while`. | 20 min |
-| 3 | `# === MASQUES` | Ajouter les octets du masque et lister les préfixes invalides. | 40 min |
+| [1](#types) | `# === TYPES` | Remplacer une valeur pour convertir « oui/non » en booléen. | 25 min |
+| [2](#boucles) | `# === BOUCLES` | Compléter une condition et ajouter une ligne dans la boucle `while`. | 20 min |
+| [3](#masques) | `# === MASQUES` | Ajouter les octets du masque et lister les préfixes invalides. | 40 min |
 
 **À conserver :** les imports, les données de [parc.py](parc.py), les repères `# ===`, les calculs déjà fournis
 et l’appel final à `terminer(...)`. Vous n’avez pas à réécrire le bilan ni à créer un autre fichier Python.

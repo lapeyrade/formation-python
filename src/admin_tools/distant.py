@@ -24,8 +24,10 @@ def charger_inventaire(chemin=None):
     if not isinstance(inventaire, dict):
         raise ValueError("L'inventaire doit être un objet JSON.")
     cibles = inventaire.get("cibles", [])
-    if not isinstance(cibles, list) or len(cibles) != 2:
-        raise ValueError("Cet exercice demande deux cibles SSH distinctes.")
+    if not isinstance(cibles, list) or not cibles:
+        raise ValueError(
+            "Déclarer au moins une cible SSH ; chaque point de connexion doit être distinct."
+        )
     noms, adresses = set(), set()
     for cible in cibles:
         if not isinstance(cible, dict):

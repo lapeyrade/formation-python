@@ -24,7 +24,7 @@ def main():
     parser.add_argument("--corrige", action="store_true", help="utiliser la collecte de référence")
     args = parser.parse_args()
     if not args.laboratoire:
-        parser.error("Ajouter --laboratoire après préparation des deux accès SSH.")
+        parser.error("Ajouter --laboratoire après préparation des accès SSH.")
     fonctions = charger("solution_collecte" if args.corrige else "mes_collectes")
     dossier = dossier_tp("tp06-collecte")
     bilan = charger("distant").executer(dossier, fonctions.collecter_parc, collecte_seule=True)

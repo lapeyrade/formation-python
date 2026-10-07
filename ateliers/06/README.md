@@ -2,6 +2,11 @@
 
 [Retour au parcours](../../README.md) — **70 minutes**, essais et autocorrection compris.
 
+**Parcours obligatoire : une seule VM.** Avant le TP, suivez la [préparation SSH locale](../../laboratoire/README.md).
+Fabric et Ansible se connectent réellement à `127.0.0.1` : contrôleur et cible sont deux rôles dans la même VM.
+Les nombres attendus ci-dessous correspondent à une cible ; le vérificateur les adapte à l’inventaire.
+L’essai « partiel » ajoute un port fermé simulé, pas une seconde machine. La variante à deux cibles est facultative.
+
 ## Mission et production
 
 Assembler les alertes et le diagnostic du même essai, puis vérifier le message capturé. Le TP se déroule dans le poste
@@ -50,8 +55,8 @@ Si nécessaire, préparez l’environnement avec `uv sync --locked`. Avancez ave
 le contrôle complet n’est demandé qu’à la fin. Un résultat `À revoir` est normal avant de compléter votre code.
 Le vérificateur relance l’étape et compare vos productions. Les chemins de sorties changent à chaque essai.
 
-**Environnement :** les étapes `email` et `integration` peuvent tourner localement ; `distant` exige deux cibles Linux
-SSH préparées. Les identifiants RustDesk ne sont pas des identifiants SSH.
+**Environnement :** les étapes `email` et `integration` peuvent tourner localement ; `distant` exige une cible SSH dans
+la VM. Les identifiants RustDesk ne sont pas des identifiants SSH.
 
 ## Voir les données avant de coder
 
@@ -70,7 +75,7 @@ précédent n’est pas nécessaire pour le retrouver.
 ## Parcours
 
 1. [Message et pièce jointe](#email) — 15 min.
-2. [Fabric et Ansible sur deux machines](#distant) — 40 min.
+2. [Fabric et Ansible sur votre VM](#distant) — 40 min.
 3. [Chaîne complète de rapport](#integration) — 15 min.
 
 Pour les connexions SSH, suivre le [guide des cibles](../../laboratoire/README.md), puis ajouter --laboratoire à
@@ -187,14 +192,14 @@ Non : soumission, livraison et lecture sont des étapes différentes.
 
 <a id="distant"></a>
 
-## Fabric et Ansible sur deux machines — 40 min
+## Fabric et Ansible sur votre VM — 40 min
 
 ```mermaid
 flowchart TD
   accTitle: Collecter puis vérifier un état distant
-  accDescr: Fabric collecte les deux cibles. Une collecte incomplète est conservée et bloque la suite. Après une collecte complète, le pilote Ansible prépare le dossier et les preuves, puis prévisualise, applique et rejoue la configuration avant de vérifier contenu et permissions.
-  I["Inventaire commun de deux cibles"] --> F["Fabric : collecter chaque cible"]
-  F --> C{"Deux résultats exploitables ?"}
+  accDescr: Fabric collecte les cibles configurées. Une collecte incomplète est conservée et bloque la suite. Après une collecte complète, le pilote Ansible prépare le dossier et les preuves, puis prévisualise, applique et rejoue la configuration avant de vérifier contenu et permissions.
+  I["Inventaire : une cible locale"] --> F["Fabric : collecter chaque cible"]
+  F --> C{"Toutes les cibles déclarées ont répondu ?"}
   C -->|Non| E["Conserver les résultats et arrêter"]
   C -->|Oui| D["Ansible : préparer le dossier et les preuves"]
   D --> P["Prévisualiser la configuration : check / diff"]
@@ -225,19 +230,19 @@ Filesystem 1024-blocks Used Available Capacity Mounted on
 
 **À faire dans l’ordre :**
 
-1. Vérifiez les deux cibles avec `uv run python outils/diagnostic.py --distant`. Si les accès échouent, faites préparer
-   les cibles avant cette étape.
+1. Vérifiez les cibles configurées avec `uv run python outils/diagnostic.py --distant`. Si les accès échouent, faites
+   préparer les cibles avant cette étape.
 2. Dans `collecter_une`, remplacez le `None` de `pct` par le résultat de : dernière ligne de `sortie`, découpage en
    colonnes, colonne d’indice 4, suppression de `%`, conversion avec `int`.
 3. Gardez la boucle par cible, la gestion d’erreur et les commandes fournies. Suivez ensuite les points A et B
    ci-dessous : ils font partie de l’exercice.
 
-**Déjà fourni — à conserver :** SSH, Fabric, erreurs par cible, SFTP et pilote Ansible. Les deux cibles doivent être
-accessibles.
+**Déjà fourni — à conserver :** SSH, Fabric, erreurs par cible, SFTP et pilote Ansible. Les cibles configurées doivent
+être accessibles.
 
 ### Avant le créneau
 
-Exécuter la commande suivante et vérifier les deux cibles :
+Exécuter la commande suivante et vérifier les cibles configurées :
 
 ```sh
 uv run python outils/diagnostic.py --distant
@@ -258,10 +263,10 @@ compte, clé, hôtes connus, Python cible et dossier dédié. La préparation de
 uv run python outils/collecter_parc.py --laboratoire
 ```
 
-**Point A :** ouvrir le dossier annoncé. collecte.csv contient les deux mesures valides ; collecte-partielle.json
-conserve un succès et une erreur ; preuve-collecte.json confirme les quatre critères. Lire execution.log et expliquer le
-statut de chaque cible. Cette commande ne lance ni Ansible ni SFTP et ne prépare aucun fichier sur les cibles. Corriger
-cette séquence avant de poursuivre.
+**Point A :** ouvrir le dossier annoncé. collecte.csv contient une mesure valide (deux dans la variante) ;
+collecte-partielle.json conserve un succès et une erreur ; preuve-collecte.json confirme les quatre critères. Lire
+execution.log et expliquer le statut de chaque cible. Cette commande ne lance ni Ansible ni SFTP et ne prépare aucun
+fichier sur les cibles. Corriger cette séquence avant de poursuivre.
 
 Répartition : écrire et essayer la collecte 10 min ; observer l’erreur et relire les preuves 5 min.
 
@@ -278,8 +283,8 @@ Répartition : écrire et essayer la collecte 10 min ; observer l’erreur et re
    ce fichier.
 4. Dans le passage guidé, repérer le module script qui transfère controle_cible.py et relire preuve-scripts.json : les
    identités correspondent à Fabric. Puis observer client.get dans admin_tools.logs_distants.telecharger_logs : les deux
-   logs fictifs sont réellement reçus par SFTP. Lire preuve-logs.json et auth-collecte.log : quatre événements, deux
-   succès et deux échecs pour 192.0.2.42. Les sources, empreintes et frontières restent visibles ; un transfert
+   logs fictifs sont réellement reçus par SFTP. Lire preuve-logs.json et auth-collecte.log : deux événements par cible,
+   un succès et un échec pour 192.0.2.42. Les sources, empreintes et frontières restent visibles ; un transfert
    incomplet bloque le regroupement complet. Réutiliser la regex du TP04, sans réécrire le pilote.
 
 Répartition : configuration, aperçu, application et relecture 15 min ; script distant et transfert des logs guidés 5
@@ -386,10 +391,10 @@ leur cohérence est contrôlée.
   "contenus_conformes": true,
   "permissions_conformes": true,
   "apercu_sans_modification": true,
-  "logs_telecharges": 2,
-  "evenements_logs": 4,
-  "echecs_logs": 2,
-  "scripts_executes": 2
+  "logs_telecharges": 1,
+  "evenements_logs": 2,
+  "echecs_logs": 1,
+  "scripts_executes": 1
 }
 ```
 
@@ -400,8 +405,8 @@ leur cohérence est contrôlée.
 <details>
 <summary>Éléments de réponse</summary>
 
-Non. Le kit refuse cette configuration. Deux points d’accès distincts doivent correspondre aux deux cibles prévues ; un
-accès au bureau distant ne garantit pas l’accès SSH entre postes.
+Non. Le kit refuse cette configuration. Dans la variante à plusieurs machines, chaque cible doit correspondre à un point
+d’accès distinct ; un accès au bureau distant ne garantit pas l’accès SSH entre postes.
 
 </details>
 
@@ -450,7 +455,7 @@ mes_fonctions.py.
 | --- | --- | --- |
 | `alertes.csv`, `alertes.xlsx` | Deux alertes sur les données de référence | Oui |
 | `diagnostic.json` | Contexte du poste et portée de la collecte | Oui |
-| `collecte.csv` | Mesures des deux cibles, si collecte complète fournie | Seulement si disponible et validée |
+| `collecte.csv` | Mesures des cibles configurées, si collecte complète fournie | Seulement si disponible et validée |
 | `execution.log` | Trace technique du traitement | Non |
 | `message.eml` | Message reçu par le SMTP local | Non |
 

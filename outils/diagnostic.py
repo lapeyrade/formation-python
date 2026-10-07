@@ -18,7 +18,7 @@ from admin_tools.metier import analyser_logs, lire_inventaire
 def main():
     parseur = argparse.ArgumentParser(description=__doc__)
     parseur.add_argument(
-        "--distant", action="store_true", help="contrôler les deux accès SSH configurés"
+        "--distant", action="store_true", help="contrôler les accès SSH configurés"
     )
     options = parseur.parse_args()
     try:
@@ -59,8 +59,10 @@ def main():
             mesures = collecter(inventaire=inventaire)
             if any(m["statut"] != "ok" or m["systeme"] != "Linux" for m in mesures):
                 print(json.dumps(mesures, ensure_ascii=False, indent=2))
-                raise ValueError("Les deux cibles Linux doivent être joignables avant le TP 06.")
-            print("Deux cibles SSH configurées : OK")
+                raise ValueError(
+                    "Toutes les cibles Linux configurées doivent être joignables avant le TP 06."
+                )
+            print(f"{len(mesures)} cible(s) SSH configurée(s) : OK")
         else:
             print("SSH non contrôlé : lancer ce diagnostic avec --distant après configuration.")
     except (OSError, ValueError, ImportError, AssertionError, subprocess.TimeoutExpired) as erreur:

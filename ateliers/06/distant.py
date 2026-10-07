@@ -84,7 +84,7 @@ def executer_collecte(dossier, collecteur, journal, parametres, collecte_seule=F
     )
     # Premier point de contrôle : observer et conserver les erreurs, sans
     # lancer Ansible ni préparer de fichier sur les cibles.
-    lire_collecte(dossier / "collecte.csv")
+    lire_collecte(dossier / "collecte.csv", noms)
     bilan_collecte = {
         "cibles_attendues": [m["cible"] for m in machines] == noms,
         "systemes_linux": all(m["systeme"] == "Linux" for m in machines),

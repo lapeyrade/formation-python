@@ -112,7 +112,7 @@ Ces cinq couples distinguent des notions proches. Chaque exemple renvoie à une 
 | Terme | Définition | Exemple dans les TP |
 | --- | --- | --- |
 | **Contrôleur** | Machine depuis laquelle on lance la collecte ou la configuration des autres machines. | Au TP06, le poste Linux de formation exécute Fabric et Ansible. |
-| **Cible** | Machine distante sur laquelle le contrôleur exécute une commande ou applique une configuration. | Au TP06, les deux hôtes SSH fournissent leurs mesures et reçoivent supervision.ini. |
+| **Cible** | Machine distante sur laquelle le contrôleur exécute une commande ou applique une configuration. | Au TP06, la cible SSH locale fournissent leurs mesures et reçoivent supervision.ini. |
 | **Module** | Unité de code que Python peut importer, souvent un fichier .py. | Au TP02, inventaire_module.py expose une fonction sans lancer sa démonstration à l’import. |
 | **Bibliothèque** | Ensemble de code réutilisable pouvant regrouper plusieurs modules et packages. | Au TP03, ma_boite fournit les règles réseau et la classe Machine aux deux scripts clients. |
 | **Exception** | Événement qui interrompt le déroulement normal du code ; elle peut être traitée ou se propager. | Au TP02, comparer la charge texte à un entier lève TypeError. |

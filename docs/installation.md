@@ -7,16 +7,15 @@
 ```mermaid
 flowchart LR
   accTitle: Où le projet s’exécute dans le poste distant
-  accDescr: L’ordinateur personnel affiche le bureau distant. Le poste Linux contient l’éditeur, le terminal, le projet uv, les données et les sorties. Fabric et Ansible y accèdent aux deux cibles SSH du dernier atelier.
+  accDescr: L’ordinateur personnel affiche le bureau distant. Le poste Linux contient l’éditeur, le terminal, le projet uv, les données et les sorties. Fabric et Ansible y accèdent au serveur SSH de cette même VM.
   PC["Ordinateur personnel"] -->|Bureau distant| T
   subgraph POSTE["Poste Linux de travail"]
     T["VS Code et terminal"] --> P["Projet uv et Python"]
     P --> O["Données et sorties/"]
     P --> L["Services HTTP et SMTP locaux"]
-    P --> F["Fabric et Ansible : SSH"]
+    P --> F["Fabric et Ansible"]
+    F -->|SSH 127.0.0.1| C["Cible : la même VM"]
   end
-  F --> C1["Cible Linux 1"]
-  F --> C2["Cible Linux 2"]
 ```
 
 `localhost` désigne la machine où le programme s’exécute. L’accès au bureau et les accès SSH sont deux vérifications
@@ -84,14 +83,14 @@ le terminal intégré avec les commandes des énoncés.
 
 ## 6. Préparer les connexions avant le TP 06
 
-Suivez le [guide des deux cibles SSH](../laboratoire/README.md), puis vérifiez :
+Suivez le [guide de préparation SSH locale](../laboratoire/README.md), puis vérifiez :
 
 ```sh
 uv run python outils/diagnostic.py --distant
 ```
 
-Un accès au bureau distant ne garantit pas un accès SSH aux cibles. Docker n’est nécessaire que si les deux cibles de
-secours ont été choisies ; le contrôleur Ansible reste dans votre projet uv.
+Un accès au bureau distant ne garantit pas un accès SSH aux cibles. Docker n’est nécessaire que si les cibles
+configurées de secours ont été choisies ; le contrôleur Ansible reste dans votre projet uv.
 
 ## 7. Faire le premier essai
 

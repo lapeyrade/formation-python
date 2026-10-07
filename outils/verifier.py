@@ -10,7 +10,7 @@ import time
 from pathlib import Path
 
 from admin_tools.chemins import RACINE
-from admin_tools.validation import verifier_productions
+from admin_tools.validation import attendus_pour_etape, verifier_productions
 
 
 def verifier(tp, corrige=False, complet=False, laboratoire=False, etape_seule=None):
@@ -77,9 +77,10 @@ def verifier(tp, corrige=False, complet=False, laboratoire=False, etape_seule=No
         except Exception as erreur:
             controles[cle] = f"Production à corriger : {erreur}"
             continue
+        attendus = attendus_pour_etape(etape)
         differences = {
             key: {"attendu": value, "obtenu": obtenu.get(key)}
-            for key, value in etape["attendus"].items()
+            for key, value in attendus.items()
             if obtenu.get(key) != value
         }
         controles[cle] = differences or "Conforme"

@@ -1,97 +1,102 @@
-# Configurer les deux cibles SSH du TP 06
+# Configurer SSH sur votre VM Linux
 
 [Retour au TP 06](../ateliers/06/README.md)
 
-Fabric et Ansible s’exécutent dans le projet uv du poste Linux. Ils utilisent le même inventaire pour deux cibles Linux
-distinctes. Les accès et les clés d’hôte sont préparés avant le créneau de pratique. Les étapes locales du TP restent
-utilisables sans connexion SSH.
+**Une VM par étudiant suffit.** Elle joue deux rôles : contrôleur (uv, Fabric et Ansible) et cible SSH
+(`127.0.0.1`, la même VM). C’est une vraie connexion SSH, mais pas une administration entre deux machines distinctes.
+La variante à deux cibles reste facultative pour illustrer le passage à un parc.
 
-## Situer le contrôleur et les cibles
+## Comprendre les deux rôles
 
 ```mermaid
 flowchart LR
-  accTitle: Un inventaire commun pour deux outils et deux cibles
-  accDescr: Le projet uv du poste de travail est le contrôleur. Le même inventaire décrit les connexions de Fabric et d’Ansible aux deux cibles SSH, qui ont leur propre Python et leur dossier dédié.
-  subgraph POSTE["Poste de travail : contrôleur"]
-    I["Inventaire, clé et known_hosts"] --> F["Fabric"]
-    I --> A["Ansible natif dans uv"]
+  P["Ordinateur personnel : bureau distant"] --> V
+  subgraph V["Votre unique VM Linux"]
+    C["Projet uv : Fabric et Ansible"] -->|SSH vers 127.0.0.1:22| T["Serveur SSH et Python système"]
+    T --> D["Dossier personnel pyx-tp06"]
+    C --> S["Données, sorties, HTTP et SMTP locaux"]
   end
-  F -->|SSH| C1["Cible 1 : Python et pyx-tp06"]
-  F -->|SSH| C2["Cible 2 : Python et pyx-tp06"]
-  A -->|SSH| C1
-  A -->|SSH| C2
 ```
 
-Le Python uv exécute les outils sur le contrôleur. Le Python des cibles exécute les tâches transférées ; sa version peut
-être différente.
+`localhost` désigne la machine où tourne le programme. Lancez donc toutes les commandes suivantes **dans la VM**.
+Les identifiants du portail ou de RustDesk ne configurent ni le compte Linux ni SSH.
 
-## Utiliser les accès de l’exercice
+## Préparer le serveur SSH avant le TP
 
-Un bureau Linux accessible à distance n’implique pas que SSH soit ouvert sur toutes les machines. Utilisez les deux
-cibles prévues avec les accès de l’exercice. Le modèle [inventaire.exemple.json](inventaire.exemple.json) montre le
-format ; ses adresses d’illustration ne sont pas des accès utilisables.
+La préparation est hors du créneau de 40 minutes. Il faut connaître le compte Linux et disposer de l’aide de
+l’administrateur pour installer/démarrer SSH si nécessaire. Sur Debian ou Ubuntu avec systemd :
 
-La configuration locale contient :
+```sh
+sudo apt-get update
+sudo apt-get install -y openssh-server python3
+sudo systemctl start ssh
+```
+
+Si `sudo` est refusé ou si la VM n’utilise pas systemd, faites préparer le service par l’assistance avant de poursuivre.
+Aucun accès aux VM des autres participants n’est nécessaire.
+
+## Préparer la clé et l’inventaire local
+
+Depuis la racine du projet, sous votre compte Linux habituel :
+
+```sh
+uv sync --locked
+uv run python outils/preparer_ssh_local.py
+uv run python outils/diagnostic.py --distant
+```
+
+Le script génère une clé dédiée dans `.labo/`, ajoute sa clé publique à votre `~/.ssh/authorized_keys` sans effacer
+les clés existantes et lit les clés publiques du serveur dans `/etc/ssh/`. Il teste SSH avant d’écrire l’inventaire.
+Le service doit écouter sur le port 22. Il refuse de remplacer un inventaire déjà présent.
+Si un ancien inventaire à deux cibles existe, déplacez-le sous un autre nom pour le conserver avant de relancer.
+
+Le contrôle doit annoncer **1 cible SSH configurée : OK** (le message utilise la forme `cible(s)`).
+Le modèle [inventaire.exemple.json](inventaire.exemple.json) illustre les champs ; le script renseigne automatiquement
+votre utilisateur et votre dossier personnel. Les noms `user` du modèle sont des exemples à remplacer.
 
 ```text
 .labo/
   inventaire.json
-  id_ed25519
-  known_hosts
+  id_ed25519_local
+  id_ed25519_local.pub
+  known_hosts_local
 ```
 
-L’inventaire indique pour chaque cible : nom, hote, port, utilisateur, python et dossier_tp. Les chemins cle et
-known_hosts sont relatifs à l’inventaire lorsqu’ils ne sont pas absolus. Le dossier cible se termine par pyx-tp06 et
-doit être accessible au compte configuré. Le Python cible est vérifié sur cette machine ; il peut différer du Python uv
-du contrôleur.
+Ces fichiers restent locaux et sont exclus de Git et de la sauvegarde étudiante. Vous pouvez utiliser un autre
+inventaire avec `PYX_INVENTAIRE`. Les chemins de clé relatifs sont résolus depuis le fichier d’inventaire.
 
-Vous pouvez utiliser un autre emplacement en définissant PYX_INVENTAIRE vers le fichier JSON concerné. Deux alias d’un
-même hôte et port sont refusés. Ne copiez pas les clés privées dans les exercices ni dans une archive partagée.
-
-## Vérifier les prérequis
-
-Depuis la racine du projet, dans le terminal Linux :
+## Ce que vérifie le TP
 
 ```sh
-uv sync --locked
-uv run ansible-playbook --version
-uv run python outils/diagnostic.py --distant
-```
-
-Le dernier contrôle doit confirmer les deux accès Linux. Les clés d’hôte inconnues sont refusées ; l’authentification du
-client et l’identité du serveur sont deux vérifications différentes.
-
-## Exécuter le TP
-
-```sh
-uv run python ateliers/06/depart.py --laboratoire
+uv run python outils/collecter_parc.py --laboratoire
 uv run python outils/verifier.py tp06 --complet --laboratoire
 ```
 
---laboratoire signifie exécuter Fabric et Ansible sur les accès configurés, quelle que soit l’origine des cibles. Le
-pilote distant.py est fourni : il produit collecte.csv, collecte-partielle.json, un inventaire Ansible généré, les
-comptes rendus d’aperçu et d’application et preuve-ansible.json.
+Complétez d’abord les fichiers indiqués dans le TP. Pour exécuter la référence, ajoutez `--corrige` au vérificateur.
+`--laboratoire` signifie « exécuter SSH et Ansible », même si la cible est la VM elle-même.
 
-Le test d’échec utilise un port local réservé sans serveur ; il n’arrête aucune machine. Les mesures concernent chaque
-cible au moment du relevé.
+| Preuve | Une cible locale | Variante à deux cibles |
+| --- | --- | --- |
+| `collecte.csv` | Une mesure Linux | Deux mesures Linux |
+| `preuve-scripts.json` | Une identité relue | Deux identités relues |
+| Logs transférés par SFTP | Un fichier, deux événements | Deux fichiers, quatre événements |
+| Échecs / succès dans ces logs fictifs | Un / un | Deux / deux |
+| Essai d’erreur contrôlée | Une réussite et un port fermé simulé | Même scénario contrôlé |
 
-## Observer l’état souhaité
+Le port fermé est créé sur le contrôleur ; ce n’est pas une deuxième VM. Aucun serveur réel n’est arrêté.
+Les contrôles comparent le résultat à **toutes les cibles déclarées**, pas à un nombre fixé à deux.
 
-Le [playbook](rapport.yml) assure le dossier dédié et rapport.txt avec le mode 0644. Il ne supprime pas ce fichier avant
-chaque essai. Le premier passage peut déjà indiquer changed=0 ; le second passage identique doit conserver cet état.
+Le playbook prépare `~/pyx-tp06`, puis y écrit `supervision.ini` en mode `0640`, avec un seuil disque de 80
+et un intervalle de 60 secondes. Il crée aussi les preuves et un journal fictif pour le transfert SFTP.
+L’aperçu de configuration ne modifie pas ce fichier ; l’application le met en conformité et la répétition doit
+indiquer `changed=0`. La préparation des preuves précède l’aperçu.
 
-Lisez les les comptes rendus d’aperçu et d’application et preuve-ansible.json. Le pilote relit réellement le contenu et
-les permissions via SSH. Après une modification exploratoire, rétablissez « Collecte système : poste prêt. » avant le
-contrôle de référence.
+Sans `--laboratoire`, la chaîne produit seulement le rapport local : cela ne valide pas SSH, même sur une seule VM.
 
-La chaîne finale joint la collecte du même essai au diagnostic et aux alertes. Une collecte explicitement fournie mais
-partielle bloque la diffusion. Sans --laboratoire, diagnostic.json indique que la collecte distante n’a pas été
-exécutée.
+## Facultatif : administrer deux cibles Docker
 
-## Secours : deux cibles Docker
-
-Si deux hôtes accessibles ne sont pas disponibles, ce secours fournit deux cibles locales isolées. Docker doit être
-disponible dans le poste Linux ; Ansible reste natif.
+Cette variante illustre un parc de plusieurs machines ; elle n’est pas nécessaire au TP obligatoire. Docker doit être
+disponible. Gardez votre inventaire local en le déplaçant avant de préparer cette variante ; ne le supprimez pas.
 
 ```mermaid
 flowchart LR
@@ -131,20 +136,9 @@ uv run python outils/laboratoire.py arreter
 L’arrêt retire seulement les conteneurs et le réseau de ce secours ; images et clés restent disponibles. Aucun arrêt
 n’est nécessaire pour les cibles fournies par les accès de formation.
 
-## Comparer avec la solution
+## Passer de la VM à un parc
 
-```sh
-uv run python ateliers/06/corrige.py --laboratoire
-uv run python outils/verifier.py tp06 --corrige --complet --laboratoire
-```
-
-Sans cibles disponibles, travailler sans --laboratoire et constater la portée locale. Cela ne valide pas
-l’administration de plusieurs machines.
-
-Le pilote TP06 prépare deux auth.log fictifs dans les dossiers dédiés, les récupère réellement par SFTP et écrit
-auth-collecte.log et preuve-logs.json : deux sources, quatre événements, deux échecs pour 192.0.2.42 et deux succès.
-Vérifier les fichiers reçus, la concaténation et le manifeste. Aucun journal système personnel n’est transféré.
-
-Le module Ansible script transfère et exécute controle_cible.py sur chaque cible. preuve-scripts.json doit correspondre
-aux identités de collecte.csv. Ce contrôle ne lit que l’identité ; changed_when: false décrit son absence de changement
-d’état, et ne signifie pas que le script n’est pas rejoué. La capture des résultats reste dans le dossier dédié.
+Le modèle [inventaire.deux-cibles.exemple.json](inventaire.deux-cibles.exemple.json) montre deux entrées. Chaque
+nouvelle cible a son adresse, son compte, ses clés d’hôte et son Python. La boucle de collecte et le playbook parcourent
+déjà l’inventaire ; aucune duplication du code n’est nécessaire. Deux alias du même hôte et port sont refusés. La
+disponibilité réseau et l’identité de chaque machine restent à vérifier dans une vraie administration distante.

@@ -49,7 +49,7 @@ resultat = {
 
 resultats_tp["email"] = resultat
 
-# === DISTANT — Fabric et Ansible sur deux machines (40 min) ===
+# === DISTANT — Fabric et Ansible sur la VM (40 min) ===
 dossier = preparer_etape(dossier_tp_racine, "distant")
 resultat = None
 

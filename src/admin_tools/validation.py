@@ -205,14 +205,16 @@ def verifier_productions(identifiant, dossier):
         from admin_tools.distant import charger_inventaire
 
         noms = [c["nom"] for c in charger_inventaire()["cibles"]]
-        collecte = lire_collecte(dossier / "collecte.csv")
+        collecte = lire_collecte(dossier / "collecte.csv", noms)
         if [c["cible"] for c in collecte] != noms:
             raise ValueError("Collecte distante incomplète")
         scripts = json.loads((dossier / "preuve-scripts.json").read_text())
         if [(s["cible"], s["hostname"], s["systeme"]) for s in scripts] != [
             (m["cible"], m["hostname"], m["systeme"]) for m in collecte
         ]:
-            raise ValueError("Le script doit avoir été exécuté sur les deux cibles collectées.")
+            raise ValueError(
+                "Le script doit avoir été exécuté sur les cibles configurées collectées."
+            )
         from admin_tools.metier import analyser_logs
 
         logs = json.loads((dossier / "preuve-logs.json").read_text())
@@ -220,7 +222,7 @@ def verifier_productions(identifiant, dossier):
             logs["source"] != "logs_fictifs_distants"
             or [s["cible"] for s in logs["sources"]] != noms
         ):
-            raise ValueError("La provenance des logs ne décrit pas les deux cibles.")
+            raise ValueError("La provenance des logs ne décrit pas les cibles configurées.")
         contenu = b""
         debut = 1
         for source in logs["sources"]:
@@ -247,13 +249,15 @@ def verifier_productions(identifiant, dossier):
             )
             debut += len(lignes)
         if (dossier / "auth-collecte.log").read_bytes() != contenu:
-            raise ValueError("Le regroupement doit conserver toutes les lignes des deux cibles.")
+            raise ValueError(
+                "Le regroupement doit conserver toutes les lignes des cibles configurées."
+            )
         analyse = analyser_logs(dossier / "auth-collecte.log")
         if logs["analyse"] != analyse or analyse != {
-            "compteurs": {"192.0.2.42": 2},
+            "compteurs": {"192.0.2.42": len(noms)},
             "rejets": [],
-            "valides": 4,
-            "succes": 2,
+            "valides": 2 * len(noms),
+            "succes": len(noms),
         }:
             raise ValueError("L'analyse des logs distants est incorrecte.")
         partiel = json.loads((dossier / "collecte-partielle.json").read_text())
@@ -285,3 +289,19 @@ def verifier_productions(identifiant, dossier):
                 raise ValueError(
                     "Le fichier distant ne correspond pas au contenu et au mode attendus."
                 )
+
+
+def attendus_pour_etape(etape):
+    """Adapter les volumes de preuve au nombre de cibles, sans changer les critères métier."""
+    attendus = dict(etape["attendus"])
+    if etape["cle"] == "distant":
+        from admin_tools.distant import charger_inventaire
+
+        nombre = len(charger_inventaire()["cibles"])
+        attendus.update(
+            logs_telecharges=nombre,
+            evenements_logs=2 * nombre,
+            echecs_logs=nombre,
+            scripts_executes=nombre,
+        )
+    return attendus

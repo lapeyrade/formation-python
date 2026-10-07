@@ -141,7 +141,7 @@ def enregistrer(rapport, dossier):
     (dossier / "diagnostic.txt").write_text("\n".join(lignes) + "\n", encoding="utf-8")
 
 
-def lire_collecte(chemin):
+def lire_collecte(chemin, cibles_attendues=None):
     """Lire une collecte complète ; refuser la diffusion d'un rapport partiel."""
     with Path(chemin).open(newline="", encoding="utf-8") as fichier:
         lecteur = csv.DictReader(fichier)
@@ -150,8 +150,10 @@ def lire_collecte(chemin):
             raise ValueError("Colonnes de collecte manquantes.")
         lignes = list(lecteur)
     noms = [ligne["cible"] for ligne in lignes]
-    if len(lignes) != 2 or len(set(noms)) != 2 or not all(noms):
-        raise ValueError("La collecte doit identifier deux cibles distinctes.")
+    if not lignes or len(set(noms)) != len(noms) or not all(noms):
+        raise ValueError("La collecte doit identifier au moins une cible, sans doublon.")
+    if cibles_attendues is not None and noms != list(cibles_attendues):
+        raise ValueError("Collecte incomplète : les cibles ne correspondent pas à l’inventaire.")
     for ligne in lignes:
         if ligne["statut"] != "ok":
             raise ValueError(

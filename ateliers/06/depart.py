@@ -57,7 +57,7 @@ resultat = {
 
 resultats_tp["email"] = resultat
 
-# === DISTANT — Fabric et Ansible sur deux machines (40 min) ===
+# === DISTANT — Fabric et Ansible sur la VM (40 min) ===
 # CONSIGNE : Une extraction disque, puis des manipulations guidées.
 # FICHIER : mes_collectes.py. Voir README.md, section distant.
 dossier = preparer_etape(dossier_tp_racine, "distant")

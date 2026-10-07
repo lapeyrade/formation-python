@@ -1,0 +1,7 @@
+{
+  "ip": "8.8.8.8",
+  "pays": "Pays fictif",
+  "ville": "Ville témoin",
+  "statut": "localisee",
+  "source": "simulation_locale"
+}

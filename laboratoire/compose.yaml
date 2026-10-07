@@ -1,0 +1,16 @@
+name: pyx-laboratoire
+services:
+  machine1:
+    build:
+      context: .
+      dockerfile: Dockerfile.cible
+    hostname: machine1
+    ports: ["127.0.0.1:22231:22"]
+    volumes: ["../.labo/id_ed25519.pub:/home/apprenant/.ssh/authorized_keys:ro"]
+  machine2:
+    build:
+      context: .
+      dockerfile: Dockerfile.cible
+    hostname: machine2
+    ports: ["127.0.0.1:22232:22"]
+    volumes: ["../.labo/id_ed25519.pub:/home/apprenant/.ssh/authorized_keys:ro"]

@@ -1,0 +1,8 @@
+FROM python:3.13.13-slim
+RUN apt-get update && apt-get install -y --no-install-recommends openssh-server && rm -rf /var/lib/apt/lists/* \
+ && useradd -m -s /bin/sh apprenant && passwd -d apprenant \
+ && mkdir -p /run/sshd /home/apprenant/.ssh \
+ && chmod 700 /home/apprenant/.ssh && chown -R apprenant:apprenant /home/apprenant
+RUN printf '%s\n' 'PasswordAuthentication no' 'KbdInteractiveAuthentication no' 'PermitRootLogin no' 'UsePAM no' 'AllowUsers apprenant' > /etc/ssh/sshd_config.d/pyx.conf
+RUN rm -f /etc/ssh/ssh_host_*
+CMD ["sh", "-c", "ssh-keygen -A && exec /usr/sbin/sshd -D -e"]

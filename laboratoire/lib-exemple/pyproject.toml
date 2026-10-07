@@ -1,0 +1,8 @@
+[project]
+name = "pyx-bonjour"
+version = "1.0.0"
+description = "Petite dépendance pédagogique locale pour apprendre uv add sans réseau"
+requires-python = ">=3.13"
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"

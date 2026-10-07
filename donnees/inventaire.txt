@@ -1,0 +1,10 @@
+srv-paris-web-01;192.0.2.1;oui;20
+srv-paris-web-02;192.0.2.2;oui;65
+srv-paris-web-03;192.0.2.3;non;90
+srv-paris-web-04;192.0.2.4;oui;10
+srv-lyon-web-05;192.0.2.5;oui;50
+srv-lyon-web-06;192.0.2.6;non;79
+srv-lyon-web-07;192.0.2.7;oui;80
+srv-lyon-web-08;192.0.2.8;oui;0
+ligne;incomplete
+srv-test;192.0.2.9;oui;inconnue

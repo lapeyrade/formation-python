@@ -1,0 +1,9 @@
+nom,ip,site,actif,charge
+srv-paris-web-01,192.0.2.1,,True,20
+srv-paris-web-02,192.0.2.2,paris,True,65
+srv-paris-web-03,192.0.2.3,paris,False,90
+srv-paris-web-04,192.0.2.4,paris,True,10
+srv-lyon-web-05,192.0.2.5,lyon,True,50
+srv-lyon-web-06,192.0.2.6,lyon,False,79
+srv-lyon-web-07,192.0.2.7,lyon,True,80
+srv-lyon-web-08,192.0.2.8,lyon,True,0

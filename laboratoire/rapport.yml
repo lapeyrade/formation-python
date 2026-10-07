@@ -1,0 +1,42 @@
+---
+- name: Déployer une configuration de supervision dans le dossier dédié
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Assurer le dossier de l'exercice
+      ansible.builtin.file:
+        path: "{{ dossier_tp }}"
+        state: directory
+        mode: '0700'
+      tags: preparation
+    - name: Exécuter le script de contrôle fourni sur chaque machine
+      ansible.builtin.script:
+        cmd: "{{ playbook_dir }}/controle_cible.py"
+        executable: "{{ ansible_python_interpreter }}"
+      register: controle_script
+      changed_when: false
+      tags: scripts
+    - name: Conserver la réponse du script sur la cible
+      ansible.builtin.copy:
+        dest: "{{ dossier_tp }}/preuve-script.json"
+        content: "{{ controle_script.stdout }}"
+        mode: '0600'
+      tags: scripts
+    - name: Préparer le log fictif de cette cible pour le transfert SFTP
+      ansible.builtin.copy:
+        dest: "{{ dossier_tp }}/auth.log"
+        content: |
+          Oct 07 10:00:00 {{ inventory_hostname }} sshd[101]: Failed password for admin from 192.0.2.42 port 40001 ssh2
+          Oct 07 10:01:00 {{ inventory_hostname }} sshd[102]: Accepted publickey for admin from 192.0.2.43 port 40002 ssh2
+        mode: '0600'
+      tags: preparation
+    - name: Assurer les paramètres de supervision
+      ansible.builtin.copy:
+        dest: "{{ dossier_tp }}/supervision.ini"
+        content: |
+          [supervision]
+          cible={{ inventory_hostname }}
+          seuil_disque_pct={{ seuil_disque_pct }}
+          intervalle_s={{ intervalle_s }}
+        mode: '0640'
+      tags: configuration

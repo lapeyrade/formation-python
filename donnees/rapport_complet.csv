@@ -1,0 +1,4 @@
+ip,nom,site,echecs
+192.0.2.1,srv-paris-web-01,paris,3
+192.0.2.2,srv-paris-web-02,paris,2
+192.0.2.99,inconnu,inconnu,1

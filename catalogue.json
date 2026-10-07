@@ -1,0 +1,431 @@
+[
+  {
+    "id": "tp01",
+    "titre": "Qualifier un parc et préparer ses réseaux",
+    "jour": "J1 matin",
+    "minutes": 85,
+    "dossier": "ateliers/01",
+    "principal": "masques",
+    "etapes": [
+      {
+        "cle": "types",
+        "titre": "Normaliser les données du parc",
+        "minutes": 25,
+        "attendus": {
+          "machines": 12,
+          "premier": "srv-paris-web-01",
+          "port_entier": 22,
+          "sites": [
+            "lyon",
+            "paris"
+          ],
+          "actives": 9
+        }
+      },
+      {
+        "cle": "boucles",
+        "titre": "Prioriser les contrôles",
+        "minutes": 20,
+        "attendus": {
+          "prioritaires": [
+            "srv-lyon-web-07",
+            "srv-lyon-dns-10",
+            "srv-lyon-db-12"
+          ],
+          "inactives": 3,
+          "tentatives": [
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "cle": "masques",
+        "titre": "Préparer le plan réseau",
+        "minutes": 40,
+        "attendus": {
+          "masques": [
+            "255.255.255.0",
+            "255.255.255.224",
+            "255.255.255.248"
+          ],
+          "capacites": [
+            254,
+            30,
+            6
+          ],
+          "prefixes_invalides": [
+            -1,
+            33
+          ],
+          "sites": {
+            "lyon": 6,
+            "paris": 6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tp02",
+    "titre": "Fiabiliser un import et réutiliser son code",
+    "jour": "J1 après-midi",
+    "minutes": 100,
+    "dossier": "ateliers/02",
+    "principal": "inventaire",
+    "etapes": [
+      {
+        "cle": "fonctions",
+        "titre": "Fonctions réutilisables",
+        "minutes": 20,
+        "attendus": {
+          "sites": [
+            "paris",
+            "lyon"
+          ],
+          "masques": [
+            "255.255.255.0",
+            "255.255.255.255"
+          ]
+        }
+      },
+      {
+        "cle": "mutabilite",
+        "titre": "Mutabilité et effets de bord",
+        "minutes": 10,
+        "attendus": {
+          "original": [
+            "ssh"
+          ],
+          "copie": [
+            "ssh",
+            "https"
+          ],
+          "premier": [
+            "a"
+          ],
+          "second": [
+            "b"
+          ]
+        }
+      },
+      {
+        "cle": "fichiers",
+        "titre": "Fichiers et exceptions",
+        "minutes": 20,
+        "attendus": {
+          "accent": true,
+          "octets": 256,
+          "copie_identique": true,
+          "erreurs": [
+            "fichier absent",
+            "conversion impossible"
+          ],
+          "finally": true
+        }
+      },
+      {
+        "cle": "inventaire",
+        "titre": "Inventaire fiable",
+        "minutes": 35,
+        "attendus": {
+          "acceptes": 8,
+          "rejetes": 2,
+          "lignes_rejetees": [
+            10,
+            11
+          ],
+          "absence_signalee": true
+        }
+      },
+      {
+        "cle": "uv",
+        "titre": "Modules et projet uv",
+        "minutes": 15,
+        "attendus": {
+          "projet": true,
+          "verrouillage": true,
+          "environnement": true,
+          "etiquette": "Hôte srv-web"
+        }
+      }
+    ]
+  },
+  {
+    "id": "tp03",
+    "titre": "Préparer un adressage et diagnostiquer un hôte",
+    "jour": "J2 matin",
+    "minutes": 100,
+    "dossier": "ateliers/03",
+    "principal": "diagnostic",
+    "etapes": [
+      {
+        "cle": "generateur",
+        "titre": "Générateur d’IP",
+        "minutes": 30,
+        "attendus": {
+          "adresses": [
+            "192.0.2.1",
+            "192.0.2.2",
+            "192.0.2.3",
+            "192.0.2.4",
+            "192.0.2.5",
+            "192.0.2.6"
+          ],
+          "longueurs": [
+            6,
+            0,
+            6
+          ],
+          "candidates": [
+            "192.0.2.2",
+            "192.0.2.4",
+            "192.0.2.5"
+          ]
+        }
+      },
+      {
+        "cle": "classe",
+        "titre": "Classe Machine",
+        "minutes": 20,
+        "attendus": {
+          "resumes": [
+            "alpha | 192.0.2.1 | actif",
+            "beta | 192.0.2.2 | inactif"
+          ],
+          "alpha_active": true
+        }
+      },
+      {
+        "cle": "bibliotheque",
+        "titre": "Bibliothèque et deux clients",
+        "minutes": 15,
+        "attendus": {
+          "nombre": 6,
+          "premier": "h1 | 192.0.2.1 | actif",
+          "dernier": "h6 | 192.0.2.6 | actif",
+          "clients_identiques": true
+        }
+      },
+      {
+        "cle": "diagnostic",
+        "titre": "Diagnostic de la machine",
+        "minutes": 35,
+        "attendus": {
+          "identite": true,
+          "disque_coherent": true,
+          "commande_reussie": true,
+          "code_echec": 4,
+          "delai_depasse": true,
+          "contexte_complet": true,
+          "commandes_systeme_reussies": true,
+          "observations_interpretees": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "tp04",
+    "titre": "Analyser un incident SSH et Web",
+    "jour": "J2 après-midi",
+    "minutes": 100,
+    "dossier": "ateliers/04",
+    "principal": "rapport",
+    "etapes": [
+      {
+        "cle": "logs",
+        "titre": "Analyser des logs",
+        "minutes": 40,
+        "attendus": {
+          "compteurs": {
+            "192.0.2.1": 3,
+            "192.0.2.2": 2,
+            "192.0.2.99": 1
+          },
+          "valides": 7,
+          "succes": 1,
+          "rejets": 2,
+          "alertes": {
+            "192.0.2.1": 3,
+            "192.0.2.2": 2
+          },
+          "web": {
+            "4xx": 2,
+            "5xx": 2,
+            "rejets": 1
+          }
+        }
+      },
+      {
+        "cle": "arguments",
+        "titre": "Arguments de commande",
+        "minutes": 15,
+        "attendus": {
+          "codes_help_invalide_zero_absent": [
+            0,
+            2,
+            2,
+            1
+          ],
+          "rapport_cree": true
+        }
+      },
+      {
+        "cle": "pandas",
+        "titre": "CSV et Excel avec Pandas",
+        "minutes": 20,
+        "attendus": {
+          "lignes": 8,
+          "formats_identiques": true,
+          "sites_reference": {
+            "lyon": 4,
+            "paris": 4
+          },
+          "inconnus_variante": 1,
+          "colonnes": [
+            "nom",
+            "ip",
+            "site",
+            "actif",
+            "charge"
+          ]
+        }
+      },
+      {
+        "cle": "rapport",
+        "titre": "Rapport complet et alertes",
+        "minutes": 25,
+        "attendus": {
+          "lignes": 3,
+          "echecs": 6,
+          "inconnus": 1,
+          "alertes": 2,
+          "echecs_alertes": 5
+        }
+      }
+    ]
+  },
+  {
+    "id": "tp05",
+    "titre": "Enrichir et conserver les rapports du SI",
+    "jour": "J3 matin",
+    "minutes": 100,
+    "dossier": "ateliers/05",
+    "principal": "sqlite",
+    "etapes": [
+      {
+        "cle": "sqlite",
+        "titre": "Importer un CSV dans SQLite",
+        "minutes": 30,
+        "attendus": {
+          "importees": 3,
+          "alertes": 2,
+          "echecs_alertes": 5,
+          "base_existante_refusee": true
+        }
+      },
+      {
+        "cle": "api",
+        "titre": "API et géolocalisation",
+        "minutes": 30,
+        "attendus": {
+          "statuts": [
+            "localisee",
+            "indisponible",
+            "erreur",
+            "erreur"
+          ],
+          "source": "simulation_locale",
+          "pays_simule": "Pays fictif"
+        }
+      },
+      {
+        "cle": "scrapy",
+        "titre": "Extraire une page avec Scrapy",
+        "minutes": 25,
+        "attendus": {
+          "nombre": 3,
+          "sites": [
+            "paris",
+            "paris",
+            "paris"
+          ],
+          "a_examiner": [
+            "API",
+            "VPN"
+          ],
+          "message_absent": "non renseigné"
+        }
+      },
+      {
+        "cle": "archives",
+        "titre": "Archives contrôlées",
+        "minutes": 15,
+        "attendus": {
+          "membres": [
+            "rapport_complet.csv",
+            "rapport_complet.xlsx"
+          ],
+          "memes_membres": true,
+          "octets_identiques": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "tp06",
+    "titre": "Collecter à distance et diffuser les alertes",
+    "jour": "J3 après-midi",
+    "minutes": 70,
+    "dossier": "ateliers/06",
+    "principal": "integration",
+    "etapes": [
+      {
+        "cle": "email",
+        "titre": "Message et pièce jointe",
+        "minutes": 15,
+        "attendus": {
+          "messages": 1,
+          "objet": "Rapport PYX : 2 alertes",
+          "piece_jointe": "rapport.zip",
+          "octets_identiques": true
+        }
+      },
+      {
+        "cle": "distant",
+        "titre": "Fabric et Ansible sur deux machines",
+        "minutes": 40,
+        "attendus": {
+          "cibles_attendues": true,
+          "systemes_linux": true,
+          "disques_valides": true,
+          "echec_partiel_visible": true,
+          "premier_reussi": true,
+          "second_sans_changement": true,
+          "contenus_conformes": true,
+          "permissions_conformes": true,
+          "apercu_sans_modification": true,
+          "logs_telecharges": 2,
+          "evenements_logs": 4,
+          "echecs_logs": 2,
+          "scripts_executes": 2
+        },
+        "laboratoire": true
+      },
+      {
+        "cle": "integration",
+        "titre": "Chaîne complète de rapport",
+        "minutes": 15,
+        "attendus": {
+          "importees": 3,
+          "alertes": 2,
+          "echecs_alertes": 5,
+          "rapport_archive": true,
+          "diagnostic_archive": true,
+          "collecte_archivee_si_executee": true,
+          "messages": 1
+        }
+      }
+    ]
+  }
+]

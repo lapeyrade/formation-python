@@ -1,8 +1,9 @@
-"""Atelier 7 optionnel : utiliser la configuration du TP6 pour surveiller le disque.
+"""Étape 1 de l'atelier 7 : construire le contrôle disque qui sera déployé avec Ansible.
 
 VOTRE TRAVAIL : les quatre TODO ci-dessous, dans l'ordre du README.
 FOURNI : lecture INI, mesure réelle ou simulée, arguments et écriture JSON dans support.py.
 Les annotations de types sont déjà écrites ; conservez-les.
+ÉTAPES SUIVANTES : ansible/deployer.yml, templates/supervision.ini.j2 et ansible/audit.yml.
 """
 
 from support import Observation, executer

@@ -14,17 +14,23 @@ uv run python ateliers/00/verifier.py 1
 
 Les commandes `outils/verifier.py` ci-dessous concernent les TP 01 à 06 ; elles n’incluent pas l’atelier 0.
 
-## L’atelier 7 optionnel
+## L’atelier 7 d’approfondissement
 
-Si le temps le permet, suivez l’[atelier 7 : contrôler le disque](../ateliers/07/README.md).
-Complétez les quatre TODO de `ateliers/07/depart.py`, puis utilisez son vérificateur dédié :
+L’[atelier 7 : déployer un contrôle disque avec Ansible](../ateliers/07/README.md) occupe un après-midi de 3 h 30,
+pause comprise. Il comprend quatre étapes : programme Python, déploiement, template et vérification de l’état.
+Commencez par `ateliers/07/depart.py`, puis suivez les fichiers et commandes de l’énoncé :
 
 ```sh
-uv run python ateliers/07/verifier.py
+uv run python ateliers/07/verifier.py --etape 1
+uv run python ateliers/07/verifier.py --etape 2
+uv run python ateliers/07/verifier.py --etape 3
+uv run python ateliers/07/verifier.py --etape 4
 ```
 
-Les simulations et l’exemple INI permettent de commencer sans préparation supplémentaire. Les commandes des six TP
-principaux restent identiques ; `outils/verifier.py tous` n’inclut pas cet atelier optionnel.
+Les simulations permettent de commencer sans SSH. Pour les étapes Ansible, préparez l’inventaire avec
+`uv run python ateliers/07/preparer_ansible.py` : cet outil réutilise les accès du TP6. Le contrôle final est
+`uv run python ateliers/07/verifier.py --etape tous`. Les commandes des six TP principaux restent identiques ;
+`outils/verifier.py tous` n’inclut pas cet approfondissement.
 
 ## Quels fichiers modifier ?
 

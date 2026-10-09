@@ -1,4 +1,4 @@
-"""Correction commentée de l'atelier 7, indépendante de votre fichier depart.py."""
+"""Correction de l'étape Python ; les playbooks corrigés se trouvent dans ansible/corrige."""
 
 from support import Observation, executer
 

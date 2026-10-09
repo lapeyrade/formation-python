@@ -180,10 +180,12 @@ Ne transférez pas `.venv` d’un système à l’autre. Les cibles SSH se prép
 | 04 | [Analyser un incident SSH et Web](ateliers/04/README.md) |
 | 05 | [Enrichir et conserver les rapports du SI](ateliers/05/README.md) |
 | 06 | [Collecter à distance et diffuser les alertes](ateliers/06/README.md) |
-| 07 — optionnel | [Utiliser la configuration du TP6 pour contrôler le disque](ateliers/07/README.md) |
+| 07 — approfondissement | [Déployer et fiabiliser un contrôle disque avec Ansible](ateliers/07/README.md) |
 
-L’atelier 7 est un prolongement de **35 à 45 minutes**, si le temps le permet. Il possède son propre contrôle et peut
-utiliser la configuration de référence fournie ; il n’ajoute aucune installation ni préparation SSH au parcours.
+L’atelier 7 est un approfondissement de **3 h 30, pause comprise**, en quatre étapes Python et Ansible.
+Il possède son propre contrôle et réutilise les accès SSH du TP6 sur votre VM.
+Une variante locale explicite est fournie.
+Vous pouvez aussi le reprendre après la formation.
 
 Chaque TP peut repartir de ses données fournies. Complétez les fichiers de l’énoncé, puis vérifiez vos résultats. Les
 messages « À compléter » sont normaux au premier lancement ; les indices sont dépliables.

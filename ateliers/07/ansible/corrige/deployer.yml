@@ -1,0 +1,52 @@
+---
+- name: Déployer le contrôle disque dans le dossier dédié
+  hosts: all
+  gather_facts: false
+  vars_files:
+    - ../variables.yml
+  pre_tasks:
+    # Une erreur de configuration doit arrêter avant de toucher les fichiers.
+    - name: Valider les paramètres de supervision
+      ansible.builtin.assert:
+        that:
+          - seuil_disque_pct is integer
+          - seuil_disque_pct >= 1 and seuil_disque_pct <= 100
+          - intervalle_s is integer
+          - intervalle_s >= 1 and intervalle_s <= 3600
+          - mode_configuration in ['copie', 'template']
+        fail_msg: "Seuil entier 1..100, intervalle entier 1..3600, mode copie ou template."
+  tasks:
+    - name: Créer les dossiers de travail
+      # file décrit l'état souhaité ; un dossier déjà conforme reste inchangé.
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop:
+        - "{{ dossier_deploiement }}"
+        - "{{ dossier_deploiement }}/rapports"
+    - name: Copier le programme et son support
+      # copy compare le contenu et les permissions, pour chaque élément de la liste.
+      ansible.builtin.copy:
+        src: "{{ item.source }}"
+        dest: "{{ dossier_deploiement }}/{{ item.nom }}"
+        mode: '0600'
+      loop:
+        - source: "{{ fichier_controle }}"
+          nom: controle_disque.py
+        - source: "{{ fichier_support }}"
+          nom: support.py
+    - name: Copier la configuration de référence
+      # Variante statique : les variables ne changent pas le texte de la copie.
+      ansible.builtin.copy:
+        src: "{{ fichier_config_exemple }}"
+        dest: "{{ dossier_deploiement }}/supervision.ini"
+        mode: '0640'
+      when: mode_configuration == 'copie'
+    - name: Générer la configuration depuis les variables
+      # template remplace les expressions Jinja puis compare avec le fichier présent.
+      ansible.builtin.template:
+        src: "{{ fichier_modele }}"
+        dest: "{{ dossier_deploiement }}/supervision.ini"
+        mode: '0640'
+      when: mode_configuration == 'template'

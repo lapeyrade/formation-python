@@ -112,7 +112,14 @@ def executer(
         if code not in {0, 1}:
             raise AtelierIncomplet("TODO 4 : choisir le code de fin 0 ou 1.")
         if args.sortie is None:
-            parent = Path(__file__).resolve().parents[2] / "sorties/tp07"
+            racine = Path(__file__).resolve().parents[2]
+            # Dans le projet : ranger les essais comme les autres TP.
+            # Après déploiement : garder les rapports à côté du programme.
+            parent = (
+                racine / "sorties/tp07"
+                if (racine / "pyproject.toml").is_file()
+                else Path(__file__).resolve().parent / "rapports"
+            )
             parent.mkdir(parents=True, exist_ok=True)
             destination = Path(tempfile.mkdtemp(prefix="essai-", dir=parent)) / "rapport.json"
         else:

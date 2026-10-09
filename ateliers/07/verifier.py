@@ -1,4 +1,4 @@
-"""Contrôler l'atelier 7 optionnel, étape par étape ou de bout en bout.
+"""Contrôler les quatre étapes de l'atelier 7, séparément ou de bout en bout.
 
 Les simulations et les productions sont isolées dans un dossier temporaire.
 Le contrôle ne modifie ni depart.py ni la configuration créée au TP6.
@@ -265,18 +265,38 @@ def main() -> int:
     parser.add_argument(
         "--corrige", action="store_true", help="contrôler corrige.py sans changer depart.py"
     )
-    parser.add_argument("--etape", choices=["calcul", "decision", "rapport", "codes"])
+    parser.add_argument(
+        "--etape",
+        choices=["1", "2", "3", "4", "tous", "calcul", "decision", "rapport", "codes"],
+        default="1",
+        help="1=Python, 2=déploiement, 3=template, 4=idempotence ; défaut : Python",
+    )
+    parser.add_argument(
+        "--local", action="store_true", help="test Ansible local explicite, sans SSH"
+    )
     args = parser.parse_args()
     try:
         module = importlib.import_module("corrige" if args.corrige else "depart")
         controles = []
-        for etape in [args.etape] if args.etape else ["calcul", "decision", "rapport", "codes"]:
-            controles.extend(fonctions(module, etape))
+        if args.etape in {"1", "tous", "calcul", "decision", "rapport", "codes"}:
+            etapes_python = (
+                ["calcul", "decision", "rapport", "codes"]
+                if args.etape in {"1", "tous"}
+                else [args.etape]
+            )
+            for etape in etapes_python:
+                controles.extend(fonctions(module, etape))
+        if args.etape in {"2", "3", "4", "tous"}:
+            from verifier_ansible import verifier
+
+            for etape in ["2", "3", "4"] if args.etape == "tous" else [args.etape]:
+                controles.extend(verifier(etape, args.corrige, args.local))
     except Exception as erreur:
         # Le contrôle doit expliquer une faute dans le code en cours d'apprentissage.
         print(f"À revoir : {type(erreur).__name__} : {erreur}")
         return 1
     reussi = bool(controles) and all(controles)
+    print(f"Étapes contrôlées : {args.etape}")
     print(f"Atelier 7 — {'OK' if reussi else 'À revoir'}")
     return 0 if reussi else 1
 

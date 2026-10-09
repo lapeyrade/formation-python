@@ -1,0 +1,53 @@
+---
+- name: Vérifier la configuration réellement déployée
+  hosts: all
+  gather_facts: false
+  vars_files:
+    - ../variables.yml
+  tasks:
+    # stat n'écrit rien ; la boucle vérifie les deux scripts avant la configuration.
+    - name: Lire les métadonnées des programmes
+      ansible.builtin.stat:
+        path: "{{ dossier_deploiement }}/{{ item }}"
+      loop:
+        - controle_disque.py
+        - support.py
+      register: programmes
+    - name: Vérifier présence et permissions des programmes
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.isreg | default(false)
+          # Un fichier absent n'a pas de mode : default permet un échec explicite.
+          - (item.stat.mode | default('absent')) == '0600'
+        fail_msg: "Programme absent ou permissions incorrectes : relancer le déploiement."
+      loop: "{{ programmes.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+    - name: Lire les métadonnées du fichier INI
+      ansible.builtin.stat:
+        path: "{{ dossier_deploiement }}/supervision.ini"
+      register: configuration
+    - name: Vérifier existence et permissions
+      ansible.builtin.assert:
+        that:
+          - configuration.stat.exists
+          # Ansible renvoie le mode comme une chaîne de caractères.
+          - configuration.stat.mode == '0640'
+        fail_msg: "Relire le fichier et ses permissions avant de poursuivre."
+    - name: Lire le contenu du fichier INI
+      ansible.builtin.slurp:
+        src: "{{ dossier_deploiement }}/supervision.ini"
+      register: contenu
+    - name: Vérifier les valeurs déployées
+      ansible.builtin.assert:
+        that:
+          # slurp renvoie du base64 : décoder avant de chercher une ligne complète.
+          - >-
+            ('seuil_disque_pct=' ~ (seuil_disque_pct | string))
+            in (contenu.content | b64decode).splitlines()
+          - >-
+            ('intervalle_s=' ~ (intervalle_s | string))
+            in (contenu.content | b64decode).splitlines()
+        fail_msg: "Le fichier présent ne correspond pas aux variables attendues."
+        success_msg: "Contenu et permissions conformes."

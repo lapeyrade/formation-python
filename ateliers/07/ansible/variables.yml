@@ -1,0 +1,6 @@
+---
+# Valeurs de référence : modifier temporairement pour observer un changement.
+# Le vérificateur utilise ses propres valeurs dans un essai isolé.
+seuil_disque_pct: 80
+intervalle_s: 60
+mode_configuration: copie

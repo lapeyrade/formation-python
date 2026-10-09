@@ -1,0 +1,46 @@
+---
+- name: Déployer le contrôle disque dans le dossier dédié
+  hosts: all
+  gather_facts: false
+  vars_files:
+    - variables.yml
+  pre_tasks:
+    # Fourni : refuser une configuration invalide avant toute écriture.
+    - name: Valider les paramètres de supervision
+      ansible.builtin.assert:
+        that:
+          - seuil_disque_pct is integer
+          - seuil_disque_pct >= 1 and seuil_disque_pct <= 100
+          - intervalle_s is integer
+          - intervalle_s >= 1 and intervalle_s <= 3600
+          - mode_configuration in ['copie', 'template']
+        fail_msg: "Seuil entier 1..100, intervalle entier 1..3600, mode copie ou template."
+  tasks:
+    - name: Créer les dossiers de travail
+      # TODO 5 : remplacer fail par file ; chemin item, directory, mode '0700'.
+      ansible.builtin.fail:
+        msg: "TODO 5 : créer les deux dossiers avec ansible.builtin.file."
+      loop:
+        - "{{ dossier_deploiement }}"
+        - "{{ dossier_deploiement }}/rapports"
+    - name: Copier le programme et son support
+      # TODO 6 : remplacer fail par copy ; source item.source, destination item.nom.
+      ansible.builtin.fail:
+        msg: "TODO 6 : copier les deux fichiers avec ansible.builtin.copy."
+      loop:
+        - source: "{{ fichier_controle }}"
+          nom: controle_disque.py
+        - source: "{{ fichier_support }}"
+          nom: support.py
+    - name: Copier la configuration de référence
+      # Fourni pour l'étape 2 ; l'étape 3 utilisera le template.
+      ansible.builtin.copy:
+        src: "{{ fichier_config_exemple }}"
+        dest: "{{ dossier_deploiement }}/supervision.ini"
+        mode: '0640'
+      when: mode_configuration == 'copie'
+    - name: Générer la configuration depuis les variables
+      # TODO 7 : remplacer fail par template ; source fichier_modele, destination INI.
+      ansible.builtin.fail:
+        msg: "TODO 7 : générer supervision.ini avec ansible.builtin.template."
+      when: mode_configuration == 'template'

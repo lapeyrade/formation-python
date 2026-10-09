@@ -2,7 +2,7 @@
 
 [Retour au TP 06](../ateliers/06/README.md)
 
-**Une VM par étudiant suffit.** Elle joue deux rôles : contrôleur (uv, Fabric et Ansible) et cible SSH
+**Une VM par personne suffit.** Elle joue deux rôles : contrôleur (uv, Fabric et Ansible) et cible SSH
 (`127.0.0.1`, la même VM). C’est une vraie connexion SSH, mais pas une administration entre deux machines distinctes.
 La variante à deux cibles reste facultative pour illustrer le passage à un parc.
 
@@ -63,7 +63,7 @@ votre utilisateur et votre dossier personnel. Les noms `user` du modèle sont de
   known_hosts_local
 ```
 
-Ces fichiers restent locaux et sont exclus de Git et de la sauvegarde étudiante. Vous pouvez utiliser un autre
+Ces fichiers restent locaux et sont exclus de Git et de la sauvegarde de vos travaux. Vous pouvez utiliser un autre
 inventaire avec `PYX_INVENTAIRE`. Les chemins de clé relatifs sont résolus depuis le fichier d’inventaire.
 
 ## Ce que vérifie le TP

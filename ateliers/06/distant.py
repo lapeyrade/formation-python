@@ -1,4 +1,4 @@
-"""Collecte étudiante puis aperçu, application et vérification Ansible natif."""
+"""Collecte du TP puis aperçu, application et vérification Ansible natif."""
 
 import csv
 import json

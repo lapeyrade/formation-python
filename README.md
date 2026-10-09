@@ -180,6 +180,10 @@ Ne transférez pas `.venv` d’un système à l’autre. Les cibles SSH se prép
 | 04 | [Analyser un incident SSH et Web](ateliers/04/README.md) |
 | 05 | [Enrichir et conserver les rapports du SI](ateliers/05/README.md) |
 | 06 | [Collecter à distance et diffuser les alertes](ateliers/06/README.md) |
+| 07 — optionnel | [Utiliser la configuration du TP6 pour contrôler le disque](ateliers/07/README.md) |
+
+L’atelier 7 est un prolongement de **35 à 45 minutes**, si le temps le permet. Il possède son propre contrôle et peut
+utiliser la configuration de référence fournie ; il n’ajoute aucune installation ni préparation SSH au parcours.
 
 Chaque TP peut repartir de ses données fournies. Complétez les fichiers de l’énoncé, puis vérifiez vos résultats. Les
 messages « À compléter » sont normaux au premier lancement ; les indices sont dépliables.
@@ -191,7 +195,7 @@ d’installation et de connexion illustrent aussi les rôles du poste de travail
 - [Se repérer dans Linux](docs/linux.md)
 - [Exécuter, contrôler et retrouver les résultats](docs/utilisation.md)
 - [Configurer SSH sur votre VM](laboratoire/README.md)
-- [Mémo Python et uv, avec glossaire](docs/memo-python-uv.md)
+- [Mémo Python et administration système, avec glossaire](docs/memo-python-uv.md)
 - [Suivre une donnée jusqu’au message](docs/fil-donnee.md)
 - [Réutiliser un script après le cours](docs/exploiter-script.md)
 - [Dépannage](docs/depannage.md)

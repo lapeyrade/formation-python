@@ -14,6 +14,18 @@ uv run python ateliers/00/verifier.py 1
 
 Les commandes `outils/verifier.py` ci-dessous concernent les TP 01 à 06 ; elles n’incluent pas l’atelier 0.
 
+## L’atelier 7 optionnel
+
+Si le temps le permet, suivez l’[atelier 7 : contrôler le disque](../ateliers/07/README.md).
+Complétez les quatre TODO de `ateliers/07/depart.py`, puis utilisez son vérificateur dédié :
+
+```sh
+uv run python ateliers/07/verifier.py
+```
+
+Les simulations et l’exemple INI permettent de commencer sans préparation supplémentaire. Les commandes des six TP
+principaux restent identiques ; `outils/verifier.py tous` n’inclut pas cet atelier optionnel.
+
 ## Quels fichiers modifier ?
 
 Dans chaque dossier, `README.md` donne la mission et les critères de réussite. Modifiez les blocs à compléter dans

@@ -18,3 +18,6 @@ Thumbs.db
 !donnees/transfert/auth-variante.log
 
 .rumdl_cache/
+
+# Fiche PDF conservée uniquement en local.
+/docs/memo-python-uv.pdf
